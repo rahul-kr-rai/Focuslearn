@@ -138,15 +138,29 @@ export const createCourse = async (req, res, next) => {
     return success(res, { course: populated }, 201, 'Course created successfully.');
   } catch (err) {
     // Handle YouTube API errors gracefully
-    if (err.response?.status === 404) {
-      return error(res, 'Playlist not found. It may be private or deleted.', 404);
-    }
-    if (err.response?.status === 403) {
-      return error(
-        res,
-        'YouTube API quota exceeded or access denied. Please try again later.',
-        429
-      );
+    if (err.response) {
+      const status = err.response.status;
+      const ytMessage =
+        err.response.data?.error?.message || err.response.data?.message || err.message;
+
+      if (status === 400) {
+        console.error('YouTube API 400 error:', ytMessage);
+        return error(
+          res,
+          `YouTube API request failed: ${ytMessage}. Please check your YOUTUBE_API_KEY in .env.`,
+          400
+        );
+      }
+      if (status === 404) {
+        return error(res, 'Playlist not found. It may be private or deleted.', 404);
+      }
+      if (status === 403) {
+        return error(
+          res,
+          'YouTube API quota exceeded or access denied. Please try again later.',
+          429
+        );
+      }
     }
     next(err);
   }
