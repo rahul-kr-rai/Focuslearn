@@ -9,6 +9,8 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import CoursePage from './pages/CoursePage';
+import StudyPage from './pages/StudyPage';
 
 /**
  * Protected route wrapper — redirects to login if not authenticated.
@@ -65,9 +67,24 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
-          {/* Phase 2+ routes will be added here */}
-          {/* <Route path="/course/:id" element={<ProtectedRoute><CoursePage /></ProtectedRoute>} /> */}
-          {/* <Route path="/study/:courseId" element={<ProtectedRoute><StudyPage /></ProtectedRoute>} /> */}
+          <Route
+            path="/course/:id"
+            element={
+              <ProtectedRoute>
+                <CoursePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/study/:courseId"
+            element={
+              <ProtectedRoute>
+                <StudyPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Phase 3+ routes will be added here */}
           {/* <Route path="/takedown" element={<TakedownPage />} /> */}
 
           {/* 404 Catch-all */}

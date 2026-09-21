@@ -11,7 +11,7 @@
 
 ---
 
-## Current Phase: Phase 1 — Backend Architecture & Database Schema
+## Current Phase: Phase 2 — YouTube Playlist Parser & Distraction-Free LMS UI
 **Status**: ✅ Completed
 
 ### Completed
@@ -30,9 +30,24 @@
 - API service with Axios interceptors
 - Client-side routing with protected/public route wrappers
 - Verified: Vite dev server runs with zero console errors
+- Course controller (create/ingest, getAll, getById, softDelete)
+- Course routes mounted at /api/courses with auth middleware
+- Full playlist ingestion flow (extract ID → fetch metadata → fetch items → batch video details → embed check → create Course + Videos)
+- YouTube IFrame Player API hook (useYouTubePlayer.js)
+- YouTube player component (distraction-free: no annotations, rel=0, modestbranding)
+- CourseCard component (thumbnail, play overlay, channel attribution, stats)
+- ModuleList sidebar (video list with active/completed states, progress bar)
+- CreatorAttribution component (channel name, avatar, "Watch on YouTube" link)
+- CoursePage (course detail with full video list, stats, Start Learning button)
+- StudyPage (split-panel: player + sidebar, auto-advance, prev/next navigation)
+- DashboardPage upgraded (import playlist modal, course grid, real stats)
+- App.jsx updated with /course/:id and /study/:courseId routes
+- Custom scrollbar and line-clamp CSS utilities
+- Verified: Vite production build succeeds (0 errors)
+- Verified: Server module loads without errors
 
 ### Next Phase
-- **Phase 2**: YouTube Playlist Parser & Distraction-Free LMS UI
+- **Phase 3**: AI Quiz Generation & Notes Module
 
 ---
 
@@ -41,7 +56,7 @@
 | Phase | Description | Status |
 |-------|-------------|--------|
 | 1 | Backend Architecture, Database Schema & Legal Guardrails | ✅ Completed |
-| 2 | YouTube Playlist Parser & Distraction-Free LMS UI | ⬜ Not Started |
+| 2 | YouTube Playlist Parser & Distraction-Free LMS UI | ✅ Completed |
 | 3 | AI Quiz Generation & Notes Module | ⬜ Not Started |
 | 4 | Progress Tracking, Analytics & Takedown Portal | ⬜ Not Started |
 
@@ -113,6 +128,19 @@ CLIENT_URL=http://localhost:5173
 - `src/components/layout/Footer.jsx` — Brand, links, legal disclaimer, YouTube ToS
 - `src/components/layout/LegalDisclaimer.jsx` — Compact/full modes, takedown link
 - `src/pages/HomePage.jsx` — Hero, 6 features grid, how-it-works, legal
+- `src/pages/DashboardPage.jsx` — Stats grid, course grid, import playlist modal
 - `src/pages/LoginPage.jsx` — Form validation, auth context
 - `src/pages/RegisterPage.jsx` — Form validation, password confirm
-- `src/pages/DashboardPage.jsx` — Stats grid, courses empty state
+- `src/pages/CoursePage.jsx` — Course detail with video list, channel attribution, stats
+- `src/pages/StudyPage.jsx` — Split-panel: YouTube player + module sidebar, auto-advance
+
+### Hooks (`client/src/hooks/`)
+- `useYouTubePlayer.js` — YouTube IFrame Player API hook (load, init, play/pause/seek)
+
+### Course Components (`client/src/components/course/`)
+- `CourseCard.jsx` — Dashboard course card with thumbnail, play overlay, stats
+- `ModuleList.jsx` — Sidebar video list with progress bar, active/completed states
+- `CreatorAttribution.jsx` — Channel name, avatar, "Watch on YouTube" link
+
+### Player Components (`client/src/components/player/`)
+- `YouTubePlayer.jsx` — Distraction-free YouTube IFrame embed wrapper
