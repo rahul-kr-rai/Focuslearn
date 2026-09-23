@@ -23,13 +23,15 @@ export function extractPlaylistId(input) {
   try {
     const url = new URL(trimmed);
     const listParam = url.searchParams.get('list');
-    if (listParam) return listParam;
+    if (listParam && /^[a-zA-Z0-9_-]{10,100}$/.test(listParam)) {
+      return listParam;
+    }
   } catch {
     // Not a valid URL — check if it's a raw playlist ID
   }
 
   // Check if it's a raw playlist ID (starts with PL, UU, FL, OL, etc.)
-  if (/^(PL|UU|FL|OL|LL|RD|UC)[a-zA-Z0-9_-]+$/.test(trimmed)) {
+  if (/^(PL|UU|FL|OL|LL|RD|UC)[a-zA-Z0-9_-]{10,100}$/.test(trimmed)) {
     return trimmed;
   }
 
