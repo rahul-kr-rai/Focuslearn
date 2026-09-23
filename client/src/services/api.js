@@ -57,7 +57,8 @@ export const courseAPI = {
 };
 
 export const quizAPI = {
-  generate: (videoId) => api.post(`/quizzes/generate/${videoId}`),
+  generate: (videoId, regenerate = false) =>
+    api.post(`/quizzes/generate/${videoId}${regenerate ? '?regenerate=true' : ''}`),
   getByVideo: (videoId) => api.get(`/quizzes/${videoId}`),
   submit: (quizId, answers) => api.post(`/quizzes/${quizId}/submit`, { answers }),
 };

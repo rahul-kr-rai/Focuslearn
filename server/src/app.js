@@ -9,6 +9,8 @@ import env from './config/env.js';
 // Route imports
 import authRoutes from './routes/authRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
+import quizRoutes from './routes/quizRoutes.js';
+import noteRoutes from './routes/noteRoutes.js';
 
 const app = express();
 
@@ -40,10 +42,10 @@ app.use('/api/', generalLimiter);
 // ──────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
+app.use('/api/quizzes', quizRoutes);
+app.use('/api/notes', noteRoutes);
 
-// Placeholder routes (will be mounted in Phase 3-4)
-// app.use('/api/quizzes', quizRoutes);
-// app.use('/api/notes', noteRoutes);
+// Placeholder routes (will be mounted in Phase 4)
 // app.use('/api/progress', progressRoutes);
 // app.use('/api/takedown', takedownRoutes);
 

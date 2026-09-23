@@ -26,6 +26,9 @@ export default function YouTubePlayer({
     currentTime,
     duration,
     getCurrentTime,
+    seekTo,
+    play,
+    pause,
   } = useYouTubePlayer(videoId, {
     containerId,
     onVideoEnd,
@@ -41,9 +44,9 @@ export default function YouTubePlayer({
   // Notify parent when ready
   useEffect(() => {
     if (isReady && onReady) {
-      onReady({ getCurrentTime, duration });
+      onReady({ getCurrentTime, duration, seekTo, play, pause });
     }
-  }, [isReady]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isReady, duration, seekTo, play, pause, getCurrentTime]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={`relative w-full ${className}`}>
