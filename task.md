@@ -71,9 +71,9 @@
 ---
 
 ## Phase 4: Progress Tracking, Analytics & Takedown Portal
-- [ ] Progress routes + controller
-- [ ] Progress dashboard UI (completion rings, streaks, goals)
-- [ ] Takedown routes + controller
-- [ ] Takedown form page (public)
-- [ ] Legal disclaimer footer integration
-- [ ] Final polish & responsive testing
+- [x] Progress routes + controller
+- [x] Progress dashboard UI (completion rings, streaks, goals)
+- [x] Takedown routes + controller
+- [x] Takedown form page (public)
+- [x] Legal disclaimer footer integration
+- [x] Final polish & responsive testing

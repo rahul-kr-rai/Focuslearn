@@ -3,6 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import {
   GraduationCap,
   LayoutDashboard,
+  BarChart3,
+  Shield,
   LogOut,
   LogIn,
   UserPlus,
@@ -52,6 +54,14 @@ export default function Navbar() {
                   <LayoutDashboard className="w-4 h-4" />
                   Dashboard
                 </Link>
+                <Link to="/progress" className={navLinkClass('/progress')}>
+                  <BarChart3 className="w-4 h-4" />
+                  Analytics
+                </Link>
+                <Link to="/takedown" className={navLinkClass('/takedown')}>
+                  <Shield className="w-4 h-4" />
+                  Takedown
+                </Link>
                 <div className="flex items-center gap-3 ml-4 pl-4 border-l border-border-default">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-accent-primary/20 flex items-center justify-center">
@@ -74,6 +84,10 @@ export default function Navbar() {
               </>
             ) : (
               <>
+                <Link to="/takedown" className={navLinkClass('/takedown')}>
+                  <Shield className="w-4 h-4" />
+                  Takedown Portal
+                </Link>
                 <Link to="/login" className={navLinkClass('/login')}>
                   <LogIn className="w-4 h-4" />
                   Login
@@ -121,6 +135,22 @@ export default function Navbar() {
                   <LayoutDashboard className="w-4 h-4" />
                   Dashboard
                 </Link>
+                <Link
+                  to="/progress"
+                  className={navLinkClass('/progress')}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Analytics
+                </Link>
+                <Link
+                  to="/takedown"
+                  className={navLinkClass('/takedown')}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Shield className="w-4 h-4" />
+                  Takedown Portal
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium text-accent-danger hover:bg-accent-danger/10 transition-colors"
@@ -131,6 +161,14 @@ export default function Navbar() {
               </>
             ) : (
               <>
+                <Link
+                  to="/takedown"
+                  className={navLinkClass('/takedown')}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Shield className="w-4 h-4" />
+                  Takedown Portal
+                </Link>
                 <Link
                   to="/login"
                   className={navLinkClass('/login')}

@@ -78,6 +78,8 @@ export const progressAPI = {
 
 export const takedownAPI = {
   submit: (data) => api.post('/takedown', data),
+  getAll: (params) => api.get('/takedown', { params }),
+  updateStatus: (id, data) => api.put(`/takedown/${id}`, data),
 };
 
 export default api;

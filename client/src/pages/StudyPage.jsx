@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -13,8 +13,10 @@ import {
   Info,
   Clock,
   ExternalLink,
+  CheckCircle2,
+  Circle,
 } from 'lucide-react';
-import { courseAPI, noteAPI } from '../services/api';
+import { courseAPI, noteAPI, progressAPI } from '../services/api';
 import YouTubePlayer from '../components/player/YouTubePlayer';
 import ModuleList from '../components/course/ModuleList';
 import CreatorAttribution from '../components/course/CreatorAttribution';
@@ -44,6 +46,8 @@ export default function StudyPage() {
   // Player controls & state
   const [playerControls, setPlayerControls] = useState(null);
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
+  const initialSeekDone = useRef(false);
+  const pendingSeekTime = useRef(0);
 
   // Study workspace tabs: 'notes' | 'quiz' | 'overview'
   const [activeTab, setActiveTab] = useState('notes');
@@ -56,28 +60,98 @@ export default function StudyPage() {
   // Quiz state
   const [quizScoreBadge, setQuizScoreBadge] = useState(null);
 
-  // Fetch course data
+  // Fetch course and user progress data
   useEffect(() => {
-    const fetchCourse = async () => {
+    const fetchCourseAndProgress = async () => {
       try {
         setLoading(true);
-        const res = await courseAPI.getById(courseId);
-        const courseData = res.data.data.course;
+        const [courseRes, progressRes] = await Promise.allSettled([
+          courseAPI.getById(courseId),
+          progressAPI.getByCourse(courseId),
+        ]);
+
+        if (courseRes.status === 'rejected') {
+          throw courseRes.reason;
+        }
+
+        const courseData = courseRes.value.data.data.course;
         setCourse(courseData);
 
-        // Set first embeddable video as active
-        if (courseData.videos?.length > 0) {
-          const firstEmbeddable = courseData.videos.find((v) => v.isEmbeddable !== false);
-          setActiveVideo(firstEmbeddable || courseData.videos[0]);
+        let initialVideo = null;
+        const completedSet = new Set();
+
+        if (progressRes.status === 'fulfilled' && progressRes.value.data.data.progress) {
+          const progressData = progressRes.value.data.data.progress;
+
+          // Populate completed video IDs
+          if (Array.isArray(progressData.completedVideos)) {
+            progressData.completedVideos.forEach((v) => {
+              if (v._id) completedSet.add(v._id.toString());
+              if (v.videoId) completedSet.add(v.videoId);
+            });
+          }
+
+          // Restore last active video if available
+          if (progressData.currentVideoId) {
+            const currentIdStr = progressData.currentVideoId._id || progressData.currentVideoId;
+            initialVideo = courseData.videos?.find(
+              (v) =>
+                v._id.toString() === currentIdStr.toString() ||
+                v.videoId === progressData.currentVideoId.videoId
+            );
+          }
+
+          // Restore playback position if > 5 seconds
+          if (progressData.currentTimestamp && progressData.currentTimestamp > 5) {
+            pendingSeekTime.current = progressData.currentTimestamp;
+          }
         }
+
+        setCompletedVideoIds(completedSet);
+
+        // Fallback to first embeddable video
+        if (!initialVideo && courseData.videos?.length > 0) {
+          initialVideo = courseData.videos.find((v) => v.isEmbeddable !== false) || courseData.videos[0];
+        }
+
+        setActiveVideo(initialVideo);
       } catch (err) {
-        setError(err.response?.data?.message || 'Failed to load course.');
+        setError(err.response?.data?.message || err.message || 'Failed to load course.');
       } finally {
         setLoading(false);
       }
     };
-    fetchCourse();
+
+    fetchCourseAndProgress();
   }, [courseId]);
+
+  // Handle initial seek when player is ready
+  useEffect(() => {
+    if (playerControls && pendingSeekTime.current > 0 && !initialSeekDone.current) {
+      initialSeekDone.current = true;
+      try {
+        playerControls.seekTo(pendingSeekTime.current);
+      } catch (e) {
+        console.error('Initial seek error:', e);
+      }
+    }
+  }, [playerControls]);
+
+  // Periodic heartbeat: sync study time and playback position every 45s
+  useEffect(() => {
+    if (!activeVideo || !courseId) return;
+
+    const interval = setInterval(() => {
+      // Sync 0.75 minute study time + current playback time
+      progressAPI.update(courseId, {
+        currentVideoId: activeVideo._id || activeVideo.videoId,
+        currentTimestamp: currentVideoTime,
+        studyTimeMinutes: 0.75,
+      }).catch((err) => console.error('Progress sync heartbeat error:', err));
+    }, 45000);
+
+    return () => clearInterval(interval);
+  }, [activeVideo, courseId, currentVideoTime]);
 
   // Fetch notes whenever active video changes
   useEffect(() => {
@@ -99,22 +173,77 @@ export default function StudyPage() {
     fetchNotes();
   }, [activeVideo]);
 
-  // Handle video selection from sidebar
-  const handleVideoSelect = useCallback((video) => {
-    setActiveVideo(video);
-    setEditingNote(null);
-    setQuizScoreBadge(null);
-  }, []);
+  // Toggle completion status for a video
+  const toggleVideoCompleted = useCallback(
+    async (video) => {
+      const vidKey = video.videoId || video._id;
+      const isCurrentlyCompleted =
+        completedVideoIds.has(video.videoId) ||
+        completedVideoIds.has(video._id) ||
+        completedVideoIds.has(video._id?.toString?.());
 
-  // Handle video completion
+      try {
+        if (isCurrentlyCompleted) {
+          setCompletedVideoIds((prev) => {
+            const next = new Set(prev);
+            next.delete(video.videoId);
+            next.delete(video._id);
+            next.delete(video._id?.toString?.());
+            return next;
+          });
+          await progressAPI.update(courseId, {
+            unmarkVideoId: video._id || video.videoId,
+          });
+        } else {
+          setCompletedVideoIds((prev) => {
+            const next = new Set(prev);
+            if (video.videoId) next.add(video.videoId);
+            if (video._id) next.add(video._id.toString());
+            return next;
+          });
+          await progressAPI.update(courseId, {
+            completedVideoId: video._id || video.videoId,
+            studyTimeMinutes: 1,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to toggle completion:', err);
+      }
+    },
+    [completedVideoIds, courseId]
+  );
+
+  // Handle video selection from sidebar
+  const handleVideoSelect = useCallback(
+    (video) => {
+      setActiveVideo(video);
+      setEditingNote(null);
+      setQuizScoreBadge(null);
+      // Save current video position
+      progressAPI.update(courseId, {
+        currentVideoId: video._id || video.videoId,
+        currentTimestamp: 0,
+      }).catch((err) => console.error('Position save error:', err));
+    },
+    [courseId]
+  );
+
+  // Handle video completion on end
   const handleVideoEnd = useCallback(() => {
     if (!activeVideo) return;
 
+    // Mark completed locally & in backend
     setCompletedVideoIds((prev) => {
       const next = new Set(prev);
-      next.add(activeVideo.videoId);
+      if (activeVideo.videoId) next.add(activeVideo.videoId);
+      if (activeVideo._id) next.add(activeVideo._id.toString());
       return next;
     });
+
+    progressAPI.update(courseId, {
+      completedVideoId: activeVideo._id || activeVideo.videoId,
+      studyTimeMinutes: 1,
+    }).catch((err) => console.error('Auto completion update error:', err));
 
     // Auto-advance to next video
     if (course?.videos) {
@@ -128,7 +257,7 @@ export default function StudyPage() {
         setActiveVideo(nextVideo);
       }
     }
-  }, [activeVideo, course]);
+  }, [activeVideo, course, courseId]);
 
   // Navigate to next/previous video
   const navigateVideo = useCallback(
@@ -149,12 +278,18 @@ export default function StudyPage() {
       }
 
       if (targetIndex >= 0 && targetIndex < course.videos.length) {
-        setActiveVideo(course.videos[targetIndex]);
+        const nextTarget = course.videos[targetIndex];
+        setActiveVideo(nextTarget);
         setEditingNote(null);
         setQuizScoreBadge(null);
+
+        progressAPI.update(courseId, {
+          currentVideoId: nextTarget._id || nextTarget.videoId,
+          currentTimestamp: 0,
+        }).catch((err) => console.error('Navigation position save error:', err));
       }
     },
-    [course, activeVideo]
+    [course, activeVideo, courseId]
   );
 
   // Player seek action (e.g. from note timestamp click)
@@ -227,6 +362,10 @@ export default function StudyPage() {
   );
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < (course.videos?.length || 0) - 1;
+  const isCurrentVideoCompleted =
+    completedVideoIds.has(activeVideo.videoId) ||
+    completedVideoIds.has(activeVideo._id) ||
+    completedVideoIds.has(activeVideo._id?.toString?.());
 
   return (
     <div className="flex h-[calc(100vh-4rem)] overflow-hidden animate-fade-in">
@@ -279,8 +418,8 @@ export default function StudyPage() {
             className="mt-4"
           />
 
-          {/* Video Navigation Bar */}
-          <div className="flex items-center justify-between mt-4 pb-4 border-b border-border-default/60">
+          {/* Video Navigation Bar with Mark Completed button */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pb-4 border-b border-border-default/60">
             <div className="flex items-center gap-2">
               <Button
                 variant="secondary"
@@ -300,6 +439,29 @@ export default function StudyPage() {
               >
                 <span className="hidden sm:inline">Next</span>
               </Button>
+
+              {/* Mark Completed Toggle Button */}
+              <button
+                type="button"
+                onClick={() => toggleVideoCompleted(activeVideo)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 ${
+                  isCurrentVideoCompleted
+                    ? 'bg-accent-success/15 border-accent-success/30 text-accent-success hover:bg-accent-success/20'
+                    : 'bg-bg-secondary border-border-default text-text-secondary hover:text-text-primary hover:border-text-tertiary'
+                }`}
+              >
+                {isCurrentVideoCompleted ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 text-accent-success" />
+                    <span>Completed</span>
+                  </>
+                ) : (
+                  <>
+                    <Circle className="w-4 h-4 text-text-tertiary" />
+                    <span>Mark Complete</span>
+                  </>
+                )}
+              </button>
             </div>
 
             {/* Current video info & live timestamp */}

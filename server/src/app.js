@@ -11,6 +11,8 @@ import authRoutes from './routes/authRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
 import quizRoutes from './routes/quizRoutes.js';
 import noteRoutes from './routes/noteRoutes.js';
+import progressRoutes from './routes/progressRoutes.js';
+import takedownRoutes from './routes/takedownRoutes.js';
 
 const app = express();
 
@@ -44,10 +46,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/notes', noteRoutes);
-
-// Placeholder routes (will be mounted in Phase 4)
-// app.use('/api/progress', progressRoutes);
-// app.use('/api/takedown', takedownRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/takedown', takedownRoutes);
 
 // ──────────────────────────────────────────────
 // Health Check

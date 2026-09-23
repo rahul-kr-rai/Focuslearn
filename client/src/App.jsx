@@ -11,6 +11,8 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import CoursePage from './pages/CoursePage';
 import StudyPage from './pages/StudyPage';
+import ProgressPage from './pages/ProgressPage';
+import TakedownPage from './pages/TakedownPage';
 
 /**
  * Protected route wrapper — redirects to login if not authenticated.
@@ -68,6 +70,14 @@ function AppRoutes() {
             }
           />
           <Route
+            path="/progress"
+            element={
+              <ProtectedRoute>
+                <ProgressPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/course/:id"
             element={
               <ProtectedRoute>
@@ -84,8 +94,8 @@ function AppRoutes() {
             }
           />
 
-          {/* Phase 3+ routes will be added here */}
-          {/* <Route path="/takedown" element={<TakedownPage />} /> */}
+          {/* Public Takedown Portal */}
+          <Route path="/takedown" element={<TakedownPage />} />
 
           {/* 404 Catch-all */}
           <Route

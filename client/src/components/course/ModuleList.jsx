@@ -66,7 +66,10 @@ export default function ModuleList({
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {videos.map((video, index) => {
           const isActive = video.videoId === activeVideoId;
-          const isCompleted = completedVideoIds.has(video.videoId);
+          const isCompleted =
+            completedVideoIds.has(video.videoId) ||
+            completedVideoIds.has(video._id) ||
+            completedVideoIds.has(video._id?.toString?.());
           const isEmbeddable = video.isEmbeddable !== false;
 
           return (
