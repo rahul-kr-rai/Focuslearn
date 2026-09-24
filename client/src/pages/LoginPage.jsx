@@ -75,16 +75,32 @@ export default function LoginPage() {
             error={fieldErrors.email}
             autoComplete="email"
           />
-          <Input
-            label="Password"
-            type="password"
-            icon={Lock}
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={fieldErrors.password}
-            autoComplete="current-password"
-          />
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-text-secondary"
+              >
+                Password
+              </label>
+              <Link
+                to="/forgot-password"
+                className="text-xs font-medium text-accent-primary hover:text-accent-secondary transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <Input
+              id="password"
+              type="password"
+              icon={Lock}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={fieldErrors.password}
+              autoComplete="current-password"
+            />
+          </div>
           <Button
             type="submit"
             fullWidth

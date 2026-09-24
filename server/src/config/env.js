@@ -11,6 +11,13 @@ const env = {
   GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:5173',
   NODE_ENV: process.env.NODE_ENV || 'development',
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_PORT: parseInt(process.env.SMTP_PORT || '587', 10),
+  SMTP_SECURE: process.env.SMTP_SECURE === 'true',
+  SMTP_USER: process.env.SMTP_USER || process.env.EMAIL_USER || process.env.GMAIL_USER,
+  SMTP_PASS: (process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.GMAIL_PASS || '').replace(/\s+/g, '') || undefined,
+  FROM_EMAIL: process.env.FROM_EMAIL || process.env.GMAIL_USER || process.env.SMTP_USER || 'noreply@focuslearn.app',
+  FROM_NAME: process.env.FROM_NAME || 'FocusLearn',
 };
 
 // Validate required environment variables

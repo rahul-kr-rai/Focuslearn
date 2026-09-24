@@ -32,8 +32,13 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('focuslearn_token');
       localStorage.removeItem('focuslearn_user');
-      // Redirect to login if not already there
-      if (window.location.pathname !== '/login') {
+      // Redirect to login only if not already on public auth pages
+      const publicPaths = ['/login', '/register', '/forgot-password'];
+      const isPublicPath =
+        publicPaths.includes(window.location.pathname) ||
+        window.location.pathname.startsWith('/reset-password');
+
+      if (!isPublicPath) {
         window.location.href = '/login';
       }
     }
@@ -47,6 +52,9 @@ export const authAPI = {
   register: (data) => api.post('/auth/register', data),
   login: (data) => api.post('/auth/login', data),
   getMe: () => api.get('/auth/me'),
+  forgotPassword: (data) => api.post('/auth/forgot-password', data),
+  verifyResetToken: (token) => api.get(`/auth/reset-password/${token}`),
+  resetPassword: (token, data) => api.post(`/auth/reset-password/${token}`, data),
 };
 
 export const courseAPI = {
