@@ -1,10 +1,19 @@
+import dns from 'dns';
 import nodemailer from 'nodemailer';
 import env from '../config/env.js';
+
+// Force DNS lookup to prioritize IPv4 addresses
+try {
+  dns.setDefaultResultOrder('ipv4first');
+} catch {
+  // Ignore on older Node versions
+}
 
 let transporter = null;
 
 /**
  * Initialize nodemailer transporter if credentials are configured.
+ * Forces IPv4 connection (family: 4) to avoid IPv6 timeouts.
  */
 function getTransporter() {
   if (transporter) return transporter;
@@ -16,6 +25,7 @@ function getTransporter() {
           host: env.SMTP_HOST,
           port: env.SMTP_PORT,
           secure: env.SMTP_SECURE,
+          family: 4, // Force IPv4
           auth:
             env.SMTP_USER && env.SMTP_PASS
               ? {
@@ -25,7 +35,10 @@ function getTransporter() {
               : undefined,
         }
       : {
-          service: 'gmail',
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true,
+          family: 4, // Force IPv4
           auth: {
             user: env.SMTP_USER,
             pass: env.SMTP_PASS,
