@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -15,15 +15,17 @@ import CoursePage from './pages/CoursePage';
 import StudyPage from './pages/StudyPage';
 import ProgressPage from './pages/ProgressPage';
 import TakedownPage from './pages/TakedownPage';
+import AdminReviewPage from './pages/AdminReviewPage';
 
 /**
  * Protected route wrapper — redirects to login if not authenticated.
  */
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) return <Loader fullPage text="Authenticating..." />;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
 
   return children;
 }
@@ -114,6 +116,18 @@ function AppRoutes() {
 
           {/* Public Takedown Portal */}
           <Route path="/takedown" element={<TakedownPage />} />
+
+          {/* Admin Review Portal (Authenticated) */}
+          <Route
+            path="/admin/takedowns"
+            element={
+              <ProtectedRoute>
+                <AdminReviewPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/admin/review" element={<Navigate to="/admin/takedowns" replace />} />
+          <Route path="/admin" element={<Navigate to="/admin/takedowns" replace />} />
 
           {/* 404 Catch-all */}
           <Route

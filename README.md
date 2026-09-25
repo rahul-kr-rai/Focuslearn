@@ -87,7 +87,7 @@ Focuslearn/
 │   │   │   ├── quiz/                 # QuizPanel (Interactive AI MCQs)
 │   │   │   └── ui/                   # Button, Input, Card, Modal, Loader
 │   │   ├── context/                  # AuthContext (JWT state & persistence)
-│   │   ├── pages/                    # Home, Login, Register, Dashboard, Study, Progress, Takedown
+│   │   ├── pages/                    # Home, Login, Register, Dashboard, Study, Progress, Takedown, AdminReview
 │   │   ├── services/                 # Axios API service client
 │   │   └── index.css                 # Tailwind v4 theme design tokens
 │   ├── vercel.json                   # SPA routing rewrites for Vercel
@@ -227,7 +227,7 @@ FocusLearn is preconfigured for zero-friction cloud deployment:
 - **No Video Hosting**: FocusLearn does not download, re-encode, or host video files. All media is streamed live via YouTube's official IFrame Player API.
 - **Creator Attribution**: Every lesson features prominent channel branding, creator name, and direct "Watch on YouTube" links.
 - **Embed Permissions**: Video embeddability is verified on ingestion. Videos with embedding disabled by the creator are respected.
-- **Takedown Portal**: Copyright holders can request removal of content at `/takedown` with automated course deactivation upon review.
+- **Takedown & Admin Portals**: Copyright holders can submit removal requests at `/takedown`. Authorized staff review and adjudicate submissions at `/admin/takedowns` (accessible via the footer) with automated course deactivation upon approval.
 - Reference: [YouTube Terms of Service](https://www.youtube.com/t/terms) & [YouTube Developer Policies](https://developers.google.com/youtube/terms/developer-policies).
 
 ---

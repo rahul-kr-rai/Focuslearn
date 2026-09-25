@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, LogIn, GraduationCap } from 'lucide-react';
 import Button from '../components/ui/Button';
@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [fieldErrors, setFieldErrors] = useState({});
   const { login, error, clearError } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const validate = () => {
     const errors = {};
@@ -32,7 +33,8 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result.success) {
-      navigate('/dashboard');
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
     }
   };
 
