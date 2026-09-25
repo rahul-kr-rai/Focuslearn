@@ -68,7 +68,14 @@ export const quizAPI = {
   generate: (videoId, regenerate = false) =>
     api.post(`/quizzes/generate/${videoId}${regenerate ? '?regenerate=true' : ''}`),
   getByVideo: (videoId) => api.get(`/quizzes/${videoId}`),
-  submit: (quizId, answers) => api.post(`/quizzes/${quizId}/submit`, { answers }),
+  submit: (quizId, payload) => {
+    const body = Array.isArray(payload) ? { answers: payload } : payload;
+    return api.post(`/quizzes/${quizId}/submit`, body);
+  },
+  getAttempts: (quizId) => api.get(`/quizzes/${quizId}/attempts`),
+  getAttemptById: (attemptId) => api.get(`/quizzes/attempts/${attemptId}`),
+  getUserOverview: () => api.get('/quizzes/user/overview'),
+  getByCourse: (courseId) => api.get(`/quizzes/course/${courseId}`),
 };
 
 export const noteAPI = {

@@ -7,7 +7,7 @@ import {
   Video,
   ExternalLink,
   AlertTriangle,
-  CheckCircle2,
+  Sparkles,
 } from 'lucide-react';
 import { courseAPI } from '../services/api';
 import Card from '../components/ui/Card';
@@ -162,7 +162,7 @@ export default function CoursePage() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Button
               icon={Play}
               onClick={() => navigate(`/study/${course._id}`)}
@@ -170,17 +170,48 @@ export default function CoursePage() {
             >
               Start Learning
             </Button>
+            <Button
+              variant="secondary"
+              icon={Sparkles}
+              onClick={() => navigate(`/course/${course._id}/quizzes`)}
+              size="lg"
+            >
+              All Quizzes
+            </Button>
             <a
               href={course.playlistUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button variant="secondary" icon={ExternalLink} size="lg">
+              <Button variant="ghost" icon={ExternalLink} size="lg">
                 View on YouTube
               </Button>
             </a>
           </div>
         </div>
+      </div>
+
+      {/* Course Navigation Tabs */}
+      <div className="flex items-center gap-2 border-b border-border-default mb-6">
+        <button
+          type="button"
+          className="px-4 py-3 text-sm font-bold border-b-2 border-accent-primary text-accent-primary flex items-center gap-2 cursor-pointer"
+        >
+          <Video className="w-4 h-4" />
+          <span>Course Content ({course.videos?.length || 0} lessons)</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => navigate(`/course/${course._id}/quizzes`)}
+          className="px-4 py-3 text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-t-lg transition-all flex items-center gap-2 group cursor-pointer"
+        >
+          <Sparkles className="w-4 h-4 text-accent-primary group-hover:scale-110 transition-transform" />
+          <span>All Quizzes</span>
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-accent-primary/10 text-accent-primary border border-accent-primary/20">
+            Assessment Portal
+          </span>
+        </button>
       </div>
 
       {/* Video list */}

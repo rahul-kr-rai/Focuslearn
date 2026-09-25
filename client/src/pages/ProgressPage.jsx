@@ -1,17 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   TrendingUp,
   Clock,
   Flame,
   Sparkles,
   BookOpen,
-  CheckCircle2,
   AlertTriangle,
-  ArrowRight,
   Plus,
+  History,
+  Eye,
+  Trophy,
+  ArrowUpRight,
+  RotateCcw,
 } from 'lucide-react';
-import { progressAPI } from '../services/api';
+import { progressAPI, quizAPI } from '../services/api';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Loader from '../components/ui/Loader';
@@ -31,8 +34,18 @@ function formatMinutes(minutes = 0) {
   return `${mins}m`;
 }
 
+function formatSeconds(sec = 0) {
+  if (!sec || sec <= 0) return '< 1m';
+  const minutes = Math.floor(sec / 60);
+  const seconds = sec % 60;
+  if (minutes === 0) return `${seconds}s`;
+  return `${minutes}m ${seconds}s`;
+}
+
 export default function ProgressPage() {
+  const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
+  const [quizOverview, setQuizOverview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filterTab, setFilterTab] = useState('all'); // 'all' | 'in_progress' | 'completed'
@@ -41,8 +54,20 @@ export default function ProgressPage() {
     try {
       setLoading(true);
       setError(null);
-      const res = await progressAPI.getDashboard();
-      setAnalytics(res.data.data.analytics);
+      const [dashRes, quizRes] = await Promise.allSettled([
+        progressAPI.getDashboard(),
+        quizAPI.getUserOverview(),
+      ]);
+
+      if (dashRes.status === 'fulfilled') {
+        setAnalytics(dashRes.value.data.data.analytics);
+      } else {
+        throw dashRes.reason;
+      }
+
+      if (quizRes.status === 'fulfilled') {
+        setQuizOverview(quizRes.value.data.data);
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load progress analytics.');
     } finally {
@@ -56,7 +81,6 @@ export default function ProgressPage() {
 
   // Handle updating goal
   const handleSaveGoal = async (newGoalHours) => {
-    // If user has courses, update the first one or save to state
     if (analytics?.courses?.length > 0) {
       const firstCourseId = analytics.courses[0].courseId;
       await progressAPI.update(firstCourseId, { goalHoursPerWeek: newGoalHours });
@@ -104,7 +128,7 @@ export default function ProgressPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in space-y-10">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -185,7 +209,7 @@ export default function ProgressPage() {
           </div>
         </Card>
 
-        {/* AI Quiz Average */}
+        {/* AI Quiz Mastery */}
         <Card hover padding="md" className="border-l-4 border-l-accent-primary">
           <div className="flex items-center justify-between">
             <div>
@@ -196,7 +220,7 @@ export default function ProgressPage() {
                 {totalQuizzesTaken > 0 ? `${overallQuizAverage}%` : 'N/A'}
               </p>
               <p className="text-[11px] text-accent-primary mt-0.5">
-                {totalQuizzesTaken} {totalQuizzesTaken === 1 ? 'quiz' : 'quizzes'} evaluated
+                {quizOverview?.totalAttempts || totalQuizzesTaken} attempts evaluated
               </p>
             </div>
             <div className="p-3 rounded-2xl bg-accent-primary/15 text-accent-primary">
@@ -263,6 +287,214 @@ export default function ProgressPage() {
             </div>
           </Card>
         </div>
+      </div>
+
+      {/* ── SECTION: Quiz Performance & Review Center ── */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border-default">
+          <div>
+            <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-accent-primary" />
+              Quiz Performance &amp; History Center
+            </h2>
+            <p className="text-xs text-text-secondary">
+              Review your overall quiz mastery, inspect previous attempt breakdowns, and track improvement.
+            </p>
+          </div>
+        </div>
+
+        {/* Quiz Metrics Row */}
+        {quizOverview && quizOverview.totalAttempts > 0 ? (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+              <Card padding="sm" className="space-y-1">
+                <span className="text-[10px] text-text-tertiary font-bold uppercase">
+                  Quizzes Attempted
+                </span>
+                <p className="text-xl font-bold font-mono text-text-primary">
+                  {quizOverview.uniqueQuizzesAttempted}
+                </p>
+                <p className="text-[11px] text-text-tertiary">Unique lessons tested</p>
+              </Card>
+
+              <Card padding="sm" className="space-y-1">
+                <span className="text-[10px] text-text-tertiary font-bold uppercase">
+                  Total Attempts
+                </span>
+                <p className="text-xl font-bold font-mono text-accent-primary">
+                  {quizOverview.totalAttempts}
+                </p>
+                <p className="text-[11px] text-text-tertiary">All submissions</p>
+              </Card>
+
+              <Card padding="sm" className="space-y-1 border-accent-success/40 bg-accent-success/5">
+                <span className="text-[10px] text-accent-success font-bold uppercase">
+                  Overall Accuracy
+                </span>
+                <p className="text-xl font-bold font-mono text-accent-success">
+                  {quizOverview.overallAveragePercentage}%
+                </p>
+                <p className="text-[11px] text-text-tertiary">Average score</p>
+              </Card>
+
+              <Card padding="sm" className="space-y-1 border-accent-warm/40 bg-accent-warm/5">
+                <span className="text-[10px] text-accent-warm font-bold uppercase">Pass Rate</span>
+                <p className="text-xl font-bold font-mono text-accent-warm">
+                  {quizOverview.overallPassRate}%
+                </p>
+                <p className="text-[11px] text-text-tertiary">
+                  {quizOverview.totalPassed} of {quizOverview.totalAttempts} passed
+                </p>
+              </Card>
+
+              <Card padding="sm" className="space-y-1">
+                <span className="text-[10px] text-text-tertiary font-bold uppercase">
+                  Perfect Scores
+                </span>
+                <p className="text-xl font-bold font-mono text-accent-purple flex items-center gap-1">
+                  <Trophy className="w-4 h-4 text-accent-warm inline" />
+                  {quizOverview.totalPerfectScores}
+                </p>
+                <p className="text-[11px] text-text-tertiary">100% score achievements</p>
+              </Card>
+            </div>
+
+            {/* Past Attempts Feed / Table */}
+            <Card padding="none" className="overflow-hidden">
+              <div className="p-4 border-b border-border-default/80 flex items-center justify-between">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
+                  <History className="w-4 h-4 text-accent-secondary" />
+                  Recent Quiz Attempts &amp; Submissions
+                </h4>
+                <span className="text-xs text-text-tertiary font-mono">
+                  Showing latest {quizOverview.recentAttempts.length}
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-bg-primary/80 border-b border-border-default text-text-tertiary uppercase font-semibold text-[10px]">
+                    <tr>
+                      <th className="p-3">Lesson &amp; Course</th>
+                      <th className="p-3">Attempt</th>
+                      <th className="p-3">Score &amp; %</th>
+                      <th className="p-3">Time Taken</th>
+                      <th className="p-3">Date</th>
+                      <th className="p-3">Status</th>
+                      <th className="p-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border-default/50">
+                    {quizOverview.recentAttempts.map((att) => {
+                      const courseTitle = att.courseId?.title || 'Course';
+                      const lessonTitle = att.videoId?.title || 'Lesson';
+
+                      return (
+                        <tr
+                          key={att._id}
+                          className="hover:bg-bg-primary/40 transition-colors duration-150"
+                        >
+                          <td className="p-3 max-w-xs">
+                            <p className="font-semibold text-text-primary truncate">
+                              {lessonTitle}
+                            </p>
+                            <p className="text-[11px] text-text-tertiary truncate">
+                              {courseTitle}
+                            </p>
+                          </td>
+                          <td className="p-3 font-bold font-mono text-text-primary whitespace-nowrap">
+                            Attempt #{att.attemptNumber}
+                          </td>
+                          <td className="p-3 whitespace-nowrap">
+                            <span className="font-mono font-bold text-text-primary">
+                              {att.score}/{att.total}
+                            </span>{' '}
+                            <span
+                              className={`font-mono font-bold text-xs ml-1 ${
+                                att.passed ? 'text-accent-success' : 'text-accent-warm'
+                              }`}
+                            >
+                              ({att.percentage}%)
+                            </span>
+                          </td>
+                          <td className="p-3 font-mono text-text-secondary whitespace-nowrap">
+                            {formatSeconds(att.timeTakenSeconds)}
+                          </td>
+                          <td className="p-3 text-text-secondary whitespace-nowrap">
+                            {new Date(att.completedAt || att.createdAt).toLocaleDateString(
+                              undefined,
+                              {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              }
+                            )}
+                          </td>
+                          <td className="p-3 whitespace-nowrap">
+                            <span
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                att.passed
+                                  ? 'bg-accent-success/15 text-accent-success border border-accent-success/25'
+                                  : 'bg-accent-warm/15 text-accent-warm border border-accent-warm/25'
+                              }`}
+                            >
+                              {att.passed ? 'Passed' : 'Practice'}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right whitespace-nowrap">
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                icon={Eye}
+                                onClick={() => navigate(`/quiz/attempt/${att._id}`)}
+                              >
+                                Review
+                              </Button>
+                              {att.courseId?._id && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  icon={RotateCcw}
+                                  onClick={() => {
+                                    const vidId = att.videoId?.videoId || att.videoId?._id;
+                                    navigate(
+                                      `/course/${att.courseId._id}/quiz/${vidId}?retake=true`
+                                    );
+                                  }}
+                                  title="Retake this quiz directly"
+                                >
+                                  Retake
+                                </Button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
+        ) : (
+          <Card className="text-center py-10">
+            <Sparkles className="w-10 h-10 text-accent-primary/60 mx-auto mb-3" />
+            <h4 className="text-base font-bold text-text-primary mb-1">
+              No Quiz Attempts Recorded Yet
+            </h4>
+            <p className="text-xs text-text-secondary max-w-sm mx-auto mb-4">
+              Take an AI quiz while studying any lesson to test your retention. Your scores, attempts,
+              and question breakdowns will appear here.
+            </p>
+            <Link to="/dashboard">
+              <Button size="sm" icon={BookOpen}>
+                Go to Study Lessons
+              </Button>
+            </Link>
+          </Card>
+        )}
       </div>
 
       {/* ── Course Progress Breakdown Section ── */}

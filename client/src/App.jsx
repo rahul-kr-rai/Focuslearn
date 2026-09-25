@@ -16,6 +16,9 @@ import StudyPage from './pages/StudyPage';
 import ProgressPage from './pages/ProgressPage';
 import TakedownPage from './pages/TakedownPage';
 import AdminReviewPage from './pages/AdminReviewPage';
+import CourseQuizzesPage from './pages/CourseQuizzesPage';
+import QuizReviewPage from './pages/QuizReviewPage';
+import QuizTakingPage from './pages/QuizTakingPage';
 
 /**
  * Protected route wrapper — redirects to login if not authenticated.
@@ -106,10 +109,42 @@ function AppRoutes() {
             }
           />
           <Route
+            path="/course/:id/quizzes"
+            element={
+              <ProtectedRoute>
+                <CourseQuizzesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/study/:courseId"
             element={
               <ProtectedRoute>
                 <StudyPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/course/:courseId/quiz/:videoId"
+            element={
+              <ProtectedRoute>
+                <QuizTakingPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz/:videoId"
+            element={
+              <ProtectedRoute>
+                <QuizTakingPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz/attempt/:attemptId"
+            element={
+              <ProtectedRoute>
+                <QuizReviewPage />
               </ProtectedRoute>
             }
           />
