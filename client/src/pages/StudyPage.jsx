@@ -43,7 +43,7 @@ export default function StudyPage() {
   const [error, setError] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
   const [completedVideoIds, setCompletedVideoIds] = useState(new Set());
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
 
   // Player controls & state
   const [playerControls, setPlayerControls] = useState(null);
@@ -643,8 +643,12 @@ export default function StudyPage() {
       <div
         className={`
           shrink-0 transition-all duration-300 border-l border-border-default
-          ${sidebarOpen ? 'w-80 xl:w-96' : 'w-0 overflow-hidden'}
-          fixed lg:relative right-0 top-16 bottom-0 z-30 bg-bg-primary lg:bg-transparent
+          fixed right-0 top-16 bottom-0 bg-bg-primary
+          lg:relative lg:top-auto lg:bottom-auto lg:bg-transparent
+          ${sidebarOpen
+            ? 'w-[min(80vw,20rem)] lg:w-80 xl:w-96 z-30 lg:z-auto'
+            : 'w-0 overflow-hidden'
+          }
         `}
       >
         {/* Sidebar toggle (desktop) */}
@@ -660,12 +664,16 @@ export default function StudyPage() {
           )}
         </button>
 
-        <div className="h-full -mt-12 px-2 pb-3">
+        <div className="h-full pt-2 px-2 pb-3 lg:-mt-12">
           <ModuleList
             videos={course.videos || []}
             activeVideoId={activeVideo.videoId}
             completedVideoIds={completedVideoIds}
-            onVideoSelect={handleVideoSelect}
+            onVideoSelect={(video) => {
+              handleVideoSelect(video);
+              // Auto-close sidebar on mobile after selection
+              if (window.innerWidth < 1024) setSidebarOpen(false);
+            }}
             courseTitle={course.title}
           />
         </div>
@@ -674,7 +682,7 @@ export default function StudyPage() {
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/40 z-20"
+          className="lg:hidden fixed inset-0 bg-black/50 z-20"
           onClick={() => setSidebarOpen(false)}
         />
       )}
