@@ -111,10 +111,10 @@ export default function QuizReviewPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in space-y-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 animate-fade-in space-y-6 sm:space-y-8">
       {/* ── Breadcrumb & Top Navigation ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-default pb-4">
-        <div className="flex items-center gap-2 text-xs text-text-secondary flex-wrap">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center justify-between sm:gap-4 border-b border-border-default pb-4">
+        <div className="flex items-center gap-2 text-xs text-text-secondary flex-wrap min-h-[44px] sm:min-h-0">
           <Link
             to={courseId ? `/course/${courseId}/quizzes` : '/progress'}
             className="hover:text-accent-primary transition-colors flex items-center gap-1"
@@ -125,31 +125,33 @@ export default function QuizReviewPage() {
           {course && (
             <>
               <span>/</span>
-              <span className="font-semibold text-text-primary truncate max-w-xs">{course.title}</span>
+              <span className="font-semibold text-text-primary truncate max-w-[120px] sm:max-w-xs">{course.title}</span>
             </>
           )}
           {video && (
             <>
               <span>/</span>
-              <span className="truncate max-w-xs">{video.title}</span>
+              <span className="truncate max-w-[120px] sm:max-w-xs">{video.title}</span>
             </>
           )}
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <Button
             variant="primary"
             size="sm"
             icon={RotateCcw}
             onClick={handleRetake}
+            className="flex-1 sm:flex-initial justify-center"
           >
-            Retake Quiz
+            Retake
           </Button>
 
           {courseId && (
-            <Link to={`/course/${courseId}/quizzes`}>
-              <Button variant="secondary" size="sm" icon={Layers}>
-                Course Quizzes
+            <Link to={`/course/${courseId}/quizzes`} className="flex-1 sm:flex-initial">
+              <Button variant="secondary" size="sm" icon={Layers} className="w-full justify-center">
+                <span className="hidden sm:inline">Course Quizzes</span>
+                <span className="sm:hidden">Quizzes</span>
               </Button>
             </Link>
           )}
@@ -158,7 +160,7 @@ export default function QuizReviewPage() {
 
       {/* ── Top Score & Details Hero Card ── */}
       <div
-        className={`rounded-2xl border p-6 sm:p-8 backdrop-blur-md shadow-xl transition-all ${
+        className={`rounded-2xl border p-4 sm:p-6 md:p-8 backdrop-blur-md shadow-xl transition-all ${
           passed
             ? 'border-accent-success/40 bg-gradient-to-br from-accent-success/15 via-bg-secondary/80 to-bg-secondary'
             : 'border-accent-warm/40 bg-gradient-to-br from-accent-warm/15 via-bg-secondary/80 to-bg-secondary'
@@ -202,7 +204,7 @@ export default function QuizReviewPage() {
           </div>
 
           {/* Big Score Display */}
-          <div className="flex items-center gap-6 p-4 rounded-xl bg-bg-primary/70 border border-border-default self-start md:self-center shrink-0">
+          <div className="flex items-center gap-4 sm:gap-6 p-3 sm:p-4 rounded-xl bg-bg-primary/70 border border-border-default self-start md:self-center shrink-0">
             <div>
               <span className="text-[10px] font-bold uppercase text-text-tertiary">Score</span>
               <p className="text-2xl font-black font-mono text-text-primary">
@@ -273,12 +275,12 @@ export default function QuizReviewPage() {
 
         {/* Attempt Switcher if multiple attempts exist */}
         {allAttempts.length > 1 && (
-          <div className="mt-5 pt-4 border-t border-border-default/60 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="mt-5 pt-4 border-t border-border-default/60 flex flex-col xs:flex-row xs:flex-wrap items-start xs:items-center justify-between gap-3 text-xs">
             <span className="font-semibold text-text-tertiary flex items-center gap-1.5">
               <span>Switch Attempt Record:</span>
             </span>
 
-            <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="flex items-center gap-1.5 flex-wrap overflow-x-auto scrollbar-thin max-w-full pb-1 xs:pb-0">
               {allAttempts.map((att) => {
                 const isCurrent = att._id === attempt._id;
 
@@ -378,15 +380,15 @@ export default function QuizReviewPage() {
                         key={optIdx}
                         className={`p-3.5 rounded-xl border text-xs flex items-center justify-between gap-3 ${cardStyle}`}
                       >
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-2.5 min-w-0">
                           <span className="w-6 h-6 rounded-md bg-bg-primary/80 flex items-center justify-center font-mono text-[11px] font-bold shrink-0 opacity-80">
                             {String.fromCharCode(65 + optIdx)}
                           </span>
-                          <span className="leading-snug">{opt}</span>
+                          <span className="leading-snug break-words">{opt}</span>
                         </div>
 
                         {badge && (
-                          <span className="text-[10px] uppercase font-bold shrink-0 px-2 py-0.5 rounded bg-bg-primary/70 border border-current">
+                          <span className="text-[10px] uppercase font-bold shrink-0 px-2 py-0.5 rounded bg-bg-primary/70 border border-current mt-1 sm:mt-0 self-end sm:self-center whitespace-nowrap">
                             {badge}
                           </span>
                         )}
@@ -412,8 +414,8 @@ export default function QuizReviewPage() {
       </div>
 
       {/* ── Bottom Actions & Pagination Footer ── */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-bg-secondary border border-border-default">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 rounded-2xl bg-bg-secondary border border-border-default">
+        <div className="flex items-center gap-2 justify-center sm:justify-start">
           {prevAttempt && (
             <Button
               variant="secondary"
@@ -437,18 +439,19 @@ export default function QuizReviewPage() {
           )}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <Button
             variant="primary"
             icon={RotateCcw}
             onClick={handleRetake}
+            className="flex-1 sm:flex-initial justify-center"
           >
-            Retake Quiz Now
+            Retake Quiz
           </Button>
 
-          <Link to={courseId ? `/course/${courseId}/quizzes` : '/progress'}>
-            <Button variant="secondary">
-              {courseId ? 'Back to Course Quizzes' : 'Back to Progress'}
+          <Link to={courseId ? `/course/${courseId}/quizzes` : '/progress'} className="flex-1 sm:flex-initial">
+            <Button variant="secondary" className="w-full justify-center">
+              {courseId ? 'Course Quizzes' : 'Progress'}
             </Button>
           </Link>
         </div>

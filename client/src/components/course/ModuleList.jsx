@@ -62,8 +62,8 @@ export default function ModuleList({
   return (
     <div className="flex flex-col h-full bg-bg-secondary border border-border-default rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-border-default shrink-0">
-        <h3 className="text-sm font-semibold text-text-primary truncate mb-2">
+      <div className="p-3 sm:p-4 border-b border-border-default shrink-0">
+        <h3 className="text-xs sm:text-sm font-semibold text-text-primary truncate mb-2">
           {courseTitle}
         </h3>
 
@@ -98,7 +98,7 @@ export default function ModuleList({
               onClick={() => isEmbeddable && onVideoSelect?.(video)}
               disabled={!isEmbeddable}
               className={`
-                w-full flex items-start gap-3 p-3 text-left transition-all duration-200 border-b border-border-subtle
+                w-full flex items-start gap-3 p-3 text-left transition-all duration-200 border-b border-border-subtle min-h-[48px] sm:min-h-0
                 ${isActive
                   ? 'bg-accent-primary/10 border-l-2 border-l-accent-primary'
                   : 'hover:bg-bg-tertiary/50 border-l-2 border-l-transparent'

@@ -6,6 +6,9 @@
    ═══════════════════════════════════════════════ */
 
 @theme {
+  /* ── Breakpoints ── */
+  --breakpoint-xs: 480px;
+
   /* ── Color Palette (Dark Mode Default) ── */
   --color-bg-primary: #0f172a;
   --color-bg-secondary: #1e293b;

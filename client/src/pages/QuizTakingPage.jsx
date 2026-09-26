@@ -332,17 +332,17 @@ export default function QuizTakingPage() {
   const activeCourseId = courseId || course?._id || quiz?.courseId;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in space-y-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 animate-fade-in space-y-4 sm:space-y-6">
       {/* ── Top Navigation & Breadcrumbs ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-default pb-4">
-        <div className="flex items-center gap-2 text-xs text-text-secondary flex-wrap">
+        <div className="flex items-center gap-2 text-xs text-text-secondary flex-wrap min-h-[44px] sm:min-h-0">
           {activeCourseId ? (
             <Link
               to={`/course/${activeCourseId}/quizzes`}
               className="hover:text-accent-primary transition-colors flex items-center gap-1 font-semibold"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>All Course Quizzes</span>
+              <span>All Quizzes</span>
             </Link>
           ) : (
             <Link
@@ -355,19 +355,19 @@ export default function QuizTakingPage() {
           )}
           {course && (
             <>
-              <span>/</span>
-              <span className="truncate max-w-xs">{course.title}</span>
+              <span className="hidden xs:inline">/</span>
+              <span className="truncate max-w-[150px] sm:max-w-xs hidden xs:inline">{course.title}</span>
             </>
           )}
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-col xs:flex-row items-start xs:items-center gap-2 shrink-0">
           {activeCourseId && (
             <Link
               to={`/study/${activeCourseId}?video=${videoId}`}
-              className="text-xs text-text-tertiary hover:text-text-primary px-3 py-1.5 rounded-lg border border-border-default hover:bg-bg-secondary transition-all"
+              className="text-xs text-text-tertiary hover:text-text-primary px-3 py-2 sm:py-1.5 rounded-lg border border-border-default hover:bg-bg-secondary transition-all min-h-[40px] sm:min-h-0 flex items-center"
             >
-              Watch Lesson Video
+              Watch Lesson
             </Link>
           )}
           {bestAttempt && (
@@ -382,7 +382,7 @@ export default function QuizTakingPage() {
       </div>
 
       {/* ── Header Title & Mode Tabs ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-bg-secondary border border-border-default shadow-md">
+      <div className="flex flex-col gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-bg-secondary border border-border-default shadow-md">
         <div>
           <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-accent-primary mb-1">
             <Sparkles className="w-3.5 h-3.5" />
@@ -455,7 +455,7 @@ export default function QuizTakingPage() {
       {/* MODE 1: ACTIVE QUIZ TAKING (Direct, No Video Player)         */}
       {/* ──────────────────────────────────────────────────────────── */}
       {viewMode === 'take' && (
-        <div className="rounded-2xl border border-border-default bg-bg-secondary/70 backdrop-blur-md p-6 sm:p-8 transition-all shadow-xl space-y-6 animate-fade-in">
+        <div className="rounded-2xl border border-border-default bg-bg-secondary/70 backdrop-blur-md p-4 sm:p-6 md:p-8 transition-all shadow-xl space-y-4 sm:space-y-6 animate-fade-in">
           {/* Quiz Stepper & Timer Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border-default">
             <div>
@@ -468,15 +468,15 @@ export default function QuizTakingPage() {
               </h3>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col xs:flex-row items-start xs:items-center gap-2 sm:gap-3">
               {/* Live stopwatch */}
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-bg-primary border border-border-default font-mono text-xs text-text-primary">
                 <Clock className="w-3.5 h-3.5 text-accent-secondary" />
                 <span>{formatTimer(timerSeconds)}</span>
               </div>
 
-              {/* Jumper pills */}
-              <div className="flex items-center gap-1.5">
+              {/* Jumper pills — scrollable on mobile */}
+              <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto scrollbar-thin max-w-full pb-1 sm:pb-0">
                 {questions.map((_, i) => {
                   const isAnswered = selectedAnswers[i] !== undefined;
                   const isCurrent = currentQuestionIdx === i;
@@ -486,7 +486,7 @@ export default function QuizTakingPage() {
                       key={i}
                       type="button"
                       onClick={() => setCurrentQuestionIdx(i)}
-                      className={`w-7 h-7 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer ${
+                      className={`w-8 h-8 sm:w-7 sm:h-7 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer shrink-0 ${
                         isCurrent
                           ? 'bg-accent-primary text-white shadow-sm scale-105'
                           : isAnswered
@@ -531,7 +531,7 @@ export default function QuizTakingPage() {
                     key={optIdx}
                     type="button"
                     onClick={() => handleSelectOption(optIdx)}
-                    className={`w-full text-left p-4 rounded-xl border transition-all duration-150 flex items-center gap-4 cursor-pointer group ${
+                    className={`w-full text-left p-3 sm:p-4 rounded-xl border transition-all duration-150 flex items-center gap-3 sm:gap-4 cursor-pointer group min-h-[52px] ${
                       isSelected
                         ? 'border-accent-primary bg-accent-primary/15 text-text-primary shadow-md ring-1 ring-accent-primary'
                         : 'border-border-default/70 bg-bg-primary/50 text-text-secondary hover:border-border-default hover:bg-bg-primary/80 hover:text-text-primary'
@@ -569,18 +569,19 @@ export default function QuizTakingPage() {
           )}
 
           {/* Bottom Navigation */}
-          <div className="flex items-center justify-between pt-4 border-t border-border-default/60">
+          <div className="flex flex-col-reverse xs:flex-row items-stretch xs:items-center justify-between gap-2 sm:gap-0 pt-4 border-t border-border-default/60">
             <Button
               variant="secondary"
               size="sm"
               icon={ChevronLeft}
               onClick={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
               disabled={currentQuestionIdx === 0}
+              className="w-full xs:w-auto justify-center"
             >
               Previous
             </Button>
 
-            <div className="text-xs text-text-tertiary font-mono">
+            <div className="text-xs text-text-tertiary font-mono text-center">
               Answered {answeredCount} of {totalQ}
             </div>
 
@@ -589,6 +590,7 @@ export default function QuizTakingPage() {
                 variant="secondary"
                 size="sm"
                 onClick={() => setCurrentQuestionIdx((prev) => Math.min(totalQ - 1, prev + 1))}
+                className="w-full xs:w-auto justify-center"
               >
                 <span className="mr-1">Next</span>
                 <ChevronRight className="w-4 h-4" />
@@ -601,7 +603,7 @@ export default function QuizTakingPage() {
                 loading={submitting}
                 disabled={submitting || answeredCount === 0}
                 onClick={handleSubmitQuiz}
-                className="shadow-md shadow-accent-primary/20"
+                className="shadow-md shadow-accent-primary/20 w-full xs:w-auto justify-center"
               >
                 Submit Quiz
               </Button>
@@ -648,14 +650,14 @@ export default function QuizTakingPage() {
                 : 'Review the detailed answer explanations and retake the quiz to improve your score.'}
             </p>
 
-            <div className="inline-flex items-center gap-6 px-6 py-3 rounded-2xl bg-bg-primary/70 border border-border-default mb-6">
+            <div className="inline-flex flex-col xs:flex-row items-center gap-4 xs:gap-6 px-4 xs:px-6 py-3 rounded-2xl bg-bg-primary/70 border border-border-default mb-6">
               <div className="text-left">
                 <span className="text-[10px] uppercase font-bold text-text-tertiary">Score</span>
                 <p className="text-xl font-black font-mono text-text-primary">
                   {activeReviewAttempt.score} / {activeReviewAttempt.total}
                 </p>
               </div>
-              <div className="w-px h-8 bg-border-default" />
+              <div className="w-px h-8 bg-border-default hidden xs:block" />
               <div className="text-left">
                 <span className="text-[10px] uppercase font-bold text-text-tertiary">Accuracy</span>
                 <p
@@ -690,12 +692,13 @@ export default function QuizTakingPage() {
               )}
 
             {/* Actions */}
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center sm:justify-center gap-2 sm:gap-3">
               <Button
                 variant="primary"
                 size="md"
                 icon={RotateCcw}
                 onClick={handleStartRetake}
+                className="w-full sm:w-auto justify-center"
               >
                 Retake Quiz
               </Button>
@@ -705,8 +708,9 @@ export default function QuizTakingPage() {
                 size="md"
                 icon={Eye}
                 onClick={() => navigate(`/quiz/attempt/${activeReviewAttempt._id}`)}
+                className="w-full sm:w-auto justify-center"
               >
-                Open Full-Page Question Review
+                Full-Page Review
               </Button>
 
               {activeCourseId && (
@@ -726,17 +730,17 @@ export default function QuizTakingPage() {
       {/* ──────────────────────────────────────────────────────────── */}
       {viewMode === 'history' && (
         <div className="space-y-4 animate-fade-in">
-          <div className="flex items-center justify-between pb-2 border-b border-border-default">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border-default">
             <div>
               <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
                 <History className="w-4 h-4 text-accent-primary" />
-                <span>All Attempt Records for this Quiz</span>
+                <span>All Attempts</span>
               </h3>
               <p className="text-xs text-text-secondary">
-                Inspect any attempt&apos;s full-page review or launch an immediate retake.
+                Inspect any attempt or launch a retake.
               </p>
             </div>
-            <Button variant="primary" size="sm" icon={RotateCcw} onClick={handleStartRetake}>
+            <Button variant="primary" size="sm" icon={RotateCcw} onClick={handleStartRetake} className="w-full sm:w-auto justify-center">
               Retake Quiz
             </Button>
           </div>
@@ -776,7 +780,7 @@ export default function QuizTakingPage() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-text-tertiary mt-1">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-tertiary mt-1">
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {new Date(att.completedAt || att.createdAt).toLocaleString(undefined, {
@@ -784,7 +788,7 @@ export default function QuizTakingPage() {
                             timeStyle: 'short',
                           })}
                         </span>
-                        <span>•</span>
+                        <span className="hidden sm:inline">•</span>
                         <span className="flex items-center gap-1 font-mono">
                           <Clock className="w-3 h-3" />
                           {formatSeconds(att.timeTakenSeconds)}
@@ -828,17 +832,17 @@ export default function QuizTakingPage() {
       {/* ──────────────────────────────────────────────────────────── */}
       {viewMode === 'compare' && comparisonStats && (
         <div className="space-y-6 animate-fade-in">
-          <div className="flex items-center justify-between pb-2 border-b border-border-default">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border-default">
             <div>
               <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-accent-primary" />
                 <span>Performance Progression</span>
               </h3>
               <p className="text-xs text-text-secondary">
-                Track your mastery development across each attempt.
+                Track your mastery across each attempt.
               </p>
             </div>
-            <Button variant="primary" size="sm" icon={RotateCcw} onClick={handleStartRetake}>
+            <Button variant="primary" size="sm" icon={RotateCcw} onClick={handleStartRetake} className="w-full sm:w-auto justify-center">
               Retake Quiz
             </Button>
           </div>
@@ -908,14 +912,14 @@ export default function QuizTakingPage() {
 
                 return (
                   <div key={att._id} className="space-y-1.5">
-                    <div className="flex items-center justify-between text-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
                       <span className="font-semibold text-text-primary flex items-center gap-1.5">
                         <span>Attempt #{att.attemptNumber}</span>
                         {bestAttempt?._id === att._id && (
                           <span className="text-[10px] text-accent-warm font-bold">★ Best</span>
                         )}
                       </span>
-                      <div className="flex items-center gap-2 font-mono text-[11px]">
+                      <div className="flex items-center gap-2 font-mono text-[11px] flex-wrap">
                         <span className="text-text-tertiary">
                           {formatSeconds(att.timeTakenSeconds)}
                         </span>

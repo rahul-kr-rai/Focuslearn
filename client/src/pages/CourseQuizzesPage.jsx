@@ -103,15 +103,15 @@ export default function CourseQuizzesPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 animate-fade-in space-y-6 sm:space-y-8">
       {/* ── Top Breadcrumbs & Back Nav ── */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <Link
           to={`/course/${id}`}
-          className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors min-h-[44px] sm:min-h-0"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to {course.title}</span>
+          <ArrowLeft className="w-4 h-4 shrink-0" />
+          <span className="truncate">Back to {course.title}</span>
         </Link>
 
         <Button
@@ -119,13 +119,14 @@ export default function CourseQuizzesPage() {
           size="sm"
           icon={Play}
           onClick={() => navigate(`/study/${id}`)}
+          className="w-full sm:w-auto justify-center"
         >
           Resume Study Room
         </Button>
       </div>
 
       {/* ── Course Header Banner ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-2xl bg-gradient-to-r from-bg-secondary via-bg-secondary/90 to-bg-primary border border-border-default shadow-lg">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-bg-secondary via-bg-secondary/90 to-bg-primary border border-border-default shadow-lg">
         <div className="flex items-start sm:items-center gap-4">
           <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-bg-tertiary shrink-0 border border-border-default">
             {course.thumbnailUrl ? (
@@ -156,12 +157,13 @@ export default function CourseQuizzesPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0 self-end md:self-center">
+        <div className="flex items-center gap-3 shrink-0 self-stretch sm:self-end md:self-center">
           <Button
             variant="primary"
             icon={Play}
             size="md"
             onClick={() => navigate(`/study/${id}?tab=quiz`)}
+            className="w-full sm:w-auto justify-center"
           >
             Launch Active Quiz
           </Button>
@@ -241,36 +243,36 @@ export default function CourseQuizzesPage() {
       </div>
 
       {/* ── Main Tab Navigation Bar ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-default pb-2">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-3 sm:gap-4 border-b border-border-default pb-2">
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-thin -mx-4 px-4 sm:mx-0 sm:px-0">
           <button
             onClick={() => setActiveTab('quizzes')}
-            className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center gap-2 ${
+            className={`px-3 sm:px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center gap-2 whitespace-nowrap shrink-0 min-h-[44px] sm:min-h-0 cursor-pointer ${
               activeTab === 'quizzes'
                 ? 'bg-accent-primary text-white shadow-md'
                 : 'text-text-secondary hover:text-text-primary hover:bg-bg-secondary'
             }`}
           >
             <Sparkles className="w-4 h-4" />
-            <span>All Course Quizzes ({lessons.length})</span>
+            <span>Quizzes ({lessons.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('history')}
-            className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center gap-2 ${
+            className={`px-3 sm:px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center gap-2 whitespace-nowrap shrink-0 min-h-[44px] sm:min-h-0 cursor-pointer ${
               activeTab === 'history'
                 ? 'bg-accent-primary text-white shadow-md'
                 : 'text-text-secondary hover:text-text-primary hover:bg-bg-secondary'
             }`}
           >
             <History className="w-4 h-4" />
-            <span>Separate Attempt Records ({attempts.length})</span>
+            <span>Attempts ({attempts.length})</span>
           </button>
         </div>
 
         {/* Quizzes list filter tabs */}
         {activeTab === 'quizzes' && (
-          <div className="flex items-center gap-1 p-1 bg-bg-secondary rounded-xl border border-border-default text-xs font-semibold">
+          <div className="flex items-center gap-1 p-1 bg-bg-secondary rounded-xl border border-border-default text-xs font-semibold overflow-x-auto scrollbar-thin">
             {[
               { id: 'all', label: 'All' },
               { id: 'attempted', label: 'Attempted' },
@@ -280,7 +282,7 @@ export default function CourseQuizzesPage() {
               <button
                 key={f.id}
                 onClick={() => setStatusFilter(f.id)}
-                className={`px-3 py-1 rounded-lg capitalize transition-all ${
+                className={`px-3 py-1.5 sm:py-1 rounded-lg capitalize transition-all whitespace-nowrap shrink-0 min-h-[36px] sm:min-h-0 cursor-pointer ${
                   statusFilter === f.id
                     ? 'bg-accent-primary text-white shadow-sm'
                     : 'text-text-tertiary hover:text-text-primary'
@@ -354,20 +356,20 @@ export default function CourseQuizzesPage() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-text-tertiary">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-tertiary">
                         <span className="flex items-center gap-1 font-mono">
                           <Clock className="w-3 h-3" />
                           {formatDuration(video.durationSeconds)}
                         </span>
                         {attemptsCount > 0 && (
                           <>
-                            <span>•</span>
+                            <span className="hidden sm:inline">•</span>
                             <span className="font-semibold text-text-secondary">
-                              {attemptsCount} {attemptsCount === 1 ? 'attempt' : 'attempts'} recorded
+                              {attemptsCount} {attemptsCount === 1 ? 'attempt' : 'attempts'}
                             </span>
                             {bestAttempt && (
                               <>
-                                <span>•</span>
+                                <span className="hidden sm:inline">•</span>
                                 <span className="font-mono text-accent-warm font-semibold">
                                   Best: {bestAttempt.score}/{bestAttempt.total} ({bestAttempt.percentage}%)
                                 </span>
@@ -380,13 +382,14 @@ export default function CourseQuizzesPage() {
                   </div>
 
                   {/* Right: Actions */}
-                  <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-border-default/60">
+                  <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0 border-border-default/60 w-full sm:w-auto">
                     {bestAttempt && (
                       <Button
                         variant="secondary"
                         size="sm"
                         icon={Eye}
                         onClick={() => navigate(`/quiz/attempt/${bestAttempt._id}`)}
+                        className="flex-1 sm:flex-initial justify-center"
                       >
                         Review Best
                       </Button>
@@ -399,8 +402,9 @@ export default function CourseQuizzesPage() {
                       onClick={() =>
                         handleTakeQuiz(video.videoId || video._id, attemptsCount > 0)
                       }
+                      className="flex-1 sm:flex-initial justify-center"
                     >
-                      {attemptsCount > 0 ? 'Retake Quiz' : 'Take Quiz'}
+                      {attemptsCount > 0 ? 'Retake' : 'Take Quiz'}
                     </Button>
                   </div>
                 </Card>
@@ -431,17 +435,19 @@ export default function CourseQuizzesPage() {
             </Card>
           ) : (
             <Card padding="none" className="overflow-hidden shadow-lg">
-              <div className="p-4 border-b border-border-default/80 flex items-center justify-between bg-bg-secondary">
+              <div className="p-3 sm:p-4 border-b border-border-default/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-bg-secondary">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
                   <History className="w-4 h-4 text-accent-primary" />
-                  All Attempt Records for {course.title}
+                  <span className="hidden sm:inline">All Attempt Records for {course.title}</span>
+                  <span className="sm:hidden">Attempt Records</span>
                 </h4>
                 <span className="text-xs text-text-tertiary font-mono">
                   {attempts.length} total attempts
                 </span>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Desktop table — hidden on mobile */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-bg-primary/80 border-b border-border-default text-text-tertiary uppercase font-semibold text-[10px]">
                     <tr>
@@ -536,6 +542,80 @@ export default function CourseQuizzesPage() {
                     })}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile card layout — visible on mobile only */}
+              <div className="md:hidden divide-y divide-border-default/50">
+                {attempts.map((att) => {
+                  const lessonTitle = att.videoId?.title || 'Lesson';
+                  const lessonVidId = att.videoId?.videoId || att.videoId?._id;
+
+                  return (
+                    <div key={att._id} className="p-3 space-y-2.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-text-primary truncate">
+                            {lessonTitle}
+                          </p>
+                          <p className="text-[11px] text-text-tertiary font-mono mt-0.5">
+                            Attempt #{att.attemptNumber}
+                          </p>
+                        </div>
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                            att.passed
+                              ? 'bg-accent-success/15 text-accent-success border border-accent-success/25'
+                              : 'bg-accent-warm/15 text-accent-warm border border-accent-warm/25'
+                          }`}
+                        >
+                          {att.passed ? 'Passed' : 'Review'}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-tertiary">
+                        <span className="font-mono font-bold text-text-primary">
+                          {att.score}/{att.total}
+                          <span className={`ml-1 ${
+                            att.passed ? 'text-accent-success' : 'text-accent-warm'
+                          }`}>
+                            ({att.percentage}%)
+                          </span>
+                        </span>
+                        <span className="flex items-center gap-1 font-mono">
+                          <Clock className="w-3 h-3" />
+                          {formatSeconds(att.timeTakenSeconds)}
+                        </span>
+                        <span>
+                          {new Date(att.completedAt || att.createdAt).toLocaleString(
+                            undefined,
+                            { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+                          )}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          icon={Eye}
+                          onClick={() => navigate(`/quiz/attempt/${att._id}`)}
+                          className="flex-1 justify-center"
+                        >
+                          Review
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          icon={RotateCcw}
+                          onClick={() => handleTakeQuiz(lessonVidId, true)}
+                          className="flex-1 justify-center"
+                        >
+                          Retake
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </Card>
           )}

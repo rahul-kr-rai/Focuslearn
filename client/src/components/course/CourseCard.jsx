@@ -96,7 +96,7 @@ export default function CourseCard({ course, onDelete, isDeleting = false }) {
               </span>
             </div>
             <span className="truncate">{course.channelTitle}</span>
-            <ExternalLink className="w-3 h-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <ExternalLink className="w-3 h-3 shrink-0 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity" />
           </a>
 
           {/* Progress Bar (if available) */}
@@ -146,10 +146,10 @@ export default function CourseCard({ course, onDelete, isDeleting = false }) {
                   onDelete(course._id);
                 }}
                 disabled={isDeleting}
-                className="p-1.5 rounded-lg text-text-tertiary hover:text-accent-danger hover:bg-accent-danger/10 transition-all duration-200 opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                className="p-2 sm:p-1.5 rounded-lg text-text-tertiary hover:text-accent-danger hover:bg-accent-danger/10 transition-all duration-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 disabled:opacity-50 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center"
                 title="Remove course"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
               </button>
             )}
           </div>
