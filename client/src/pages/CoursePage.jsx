@@ -229,12 +229,17 @@ export default function CoursePage() {
               key={video._id}
               hover
               padding="none"
-              className={`${!video.isEmbeddable ? 'opacity-60' : ''}`}
+              className={`${!video.isEmbeddable ? 'opacity-60' : 'cursor-pointer'}`}
+              onClick={() => {
+                if (video.isEmbeddable) {
+                  navigate(`/study/${course._id}?video=${video._id}`);
+                }
+              }}
             >
               <div className="flex items-center gap-4 p-3">
                 {/* Position */}
                 <div className="shrink-0 w-8 h-8 rounded-lg bg-bg-tertiary flex items-center justify-center">
-                  <span className="text-xs font-medium text-text-tertiary">
+                  <span className="text-xs font-bold text-white">
                     {index + 1}
                   </span>
                 </div>
@@ -273,10 +278,6 @@ export default function CoursePage() {
                   </div>
                 </div>
 
-                {/* Play icon */}
-                {video.isEmbeddable && (
-                  <Play className="w-4 h-4 text-text-tertiary shrink-0" />
-                )}
               </div>
             </Card>
           ))}

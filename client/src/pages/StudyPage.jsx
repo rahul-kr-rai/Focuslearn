@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import {
   ArrowLeft,
   ChevronLeft,
@@ -34,6 +34,8 @@ import { formatTime } from '../utils/formatters';
  */
 export default function StudyPage() {
   const { courseId } = useParams();
+  const [searchParams] = useSearchParams();
+  const requestedVideoId = searchParams.get('video');
   const navigate = useNavigate();
 
   const [course, setCourse] = useState(null);
@@ -91,8 +93,8 @@ export default function StudyPage() {
             });
           }
 
-          // Restore last active video if available
-          if (progressData.currentVideoId) {
+          // Restore last active video if available (only when no specific video was requested)
+          if (!requestedVideoId && progressData.currentVideoId) {
             const currentIdStr = progressData.currentVideoId._id || progressData.currentVideoId;
             initialVideo = courseData.videos?.find(
               (v) =>
@@ -101,13 +103,20 @@ export default function StudyPage() {
             );
           }
 
-          // Restore playback position if > 5 seconds
-          if (progressData.currentTimestamp && progressData.currentTimestamp > 5) {
+          // Restore playback position if > 5 seconds (only when resuming, not navigating to a specific video)
+          if (!requestedVideoId && progressData.currentTimestamp && progressData.currentTimestamp > 5) {
             pendingSeekTime.current = progressData.currentTimestamp;
           }
         }
 
         setCompletedVideoIds(completedSet);
+
+        // If a specific video was requested via query param, use it
+        if (requestedVideoId && courseData.videos?.length > 0) {
+          initialVideo = courseData.videos.find(
+            (v) => v._id === requestedVideoId || v._id?.toString() === requestedVideoId || v.videoId === requestedVideoId
+          ) || initialVideo;
+        }
 
         // Fallback to first embeddable video
         if (!initialVideo && courseData.videos?.length > 0) {
