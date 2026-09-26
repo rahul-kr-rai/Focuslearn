@@ -428,7 +428,7 @@ export default function StudyPage() {
           />
 
           {/* Video Navigation Bar with Mark Completed button */}
-          <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pb-4 border-b border-border-default/60">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4 pb-4 border-b border-border-default/60">
             <div className="flex items-center gap-2">
               <Button
                 variant="secondary"
@@ -453,7 +453,7 @@ export default function StudyPage() {
               <button
                 type="button"
                 onClick={() => toggleVideoCompleted(activeVideo)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold border transition-all duration-200 ${
                   isCurrentVideoCompleted
                     ? 'bg-accent-success/15 border-accent-success/30 text-accent-success hover:bg-accent-success/20'
                     : 'bg-bg-secondary border-border-default text-text-secondary hover:text-text-primary hover:border-text-tertiary'
@@ -462,7 +462,7 @@ export default function StudyPage() {
                 {isCurrentVideoCompleted ? (
                   <>
                     <CheckCircle2 className="w-4 h-4 text-accent-success" />
-                    <span>Completed</span>
+                    <span className="hidden sm:inline">Completed</span>
                   </>
                 ) : (
                   <>
@@ -474,11 +474,11 @@ export default function StudyPage() {
             </div>
 
             {/* Current video info & live timestamp */}
-            <div className="text-right">
-              <p className="text-sm font-medium text-text-primary truncate max-w-xs sm:max-w-md">
+            <div className="text-left sm:text-right">
+              <p className="text-xs sm:text-sm font-medium text-text-primary truncate max-w-[70vw] sm:max-w-xs md:max-w-md">
                 {activeVideo.title}
               </p>
-              <div className="flex items-center justify-end gap-2 text-xs text-text-tertiary">
+              <div className="flex items-center sm:justify-end gap-2 text-[11px] sm:text-xs text-text-tertiary">
                 <span>
                   Lesson {(currentIndex || 0) + 1} of {course.videos?.length || 0}
                 </span>
@@ -493,12 +493,12 @@ export default function StudyPage() {
           {/* ── Interactive Workspace (Tabs for Notes, AI Quiz, Overview) ── */}
           <div className="mt-6 mb-16">
             {/* Tab Buttons */}
-            <div className="flex items-center gap-2 border-b border-border-default/80 pb-px mb-6">
+            <div className="flex items-center gap-1 sm:gap-2 border-b border-border-default/80 pb-px mb-6 overflow-x-auto">
               {/* Notes Tab */}
               <button
                 type="button"
                 onClick={() => setActiveTab('notes')}
-                className={`relative px-4 py-2.5 text-sm font-semibold flex items-center gap-2 transition-all ${
+                className={`relative px-2.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 transition-all whitespace-nowrap ${
                   activeTab === 'notes'
                     ? 'text-accent-primary border-b-2 border-accent-primary'
                     : 'text-text-secondary hover:text-text-primary'
@@ -506,7 +506,7 @@ export default function StudyPage() {
               >
                 <FileText className="w-4 h-4" />
                 <span>Notes</span>
-                <span className="px-1.5 py-0.2 rounded-full text-xs font-mono bg-bg-tertiary text-accent-secondary">
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] sm:text-xs font-mono bg-bg-tertiary text-accent-secondary">
                   {notes.length}
                 </span>
               </button>
@@ -515,7 +515,7 @@ export default function StudyPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab('quiz')}
-                className={`relative px-4 py-2.5 text-sm font-semibold flex items-center gap-2 transition-all ${
+                className={`relative px-2.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 transition-all whitespace-nowrap ${
                   activeTab === 'quiz'
                     ? 'text-accent-primary border-b-2 border-accent-primary'
                     : 'text-text-secondary hover:text-text-primary'
@@ -524,7 +524,7 @@ export default function StudyPage() {
                 <Sparkles className="w-4 h-4" />
                 <span>AI Quiz</span>
                 {quizScoreBadge ? (
-                  <span className="px-1.5 py-0.2 rounded-full text-xs font-mono bg-accent-success/20 text-accent-success">
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] sm:text-xs font-mono bg-accent-success/20 text-accent-success">
                     {quizScoreBadge.percentage}%
                   </span>
                 ) : (
@@ -538,7 +538,7 @@ export default function StudyPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab('overview')}
-                className={`relative px-4 py-2.5 text-sm font-semibold flex items-center gap-2 transition-all ${
+                className={`relative px-2.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 transition-all whitespace-nowrap ${
                   activeTab === 'overview'
                     ? 'text-accent-primary border-b-2 border-accent-primary'
                     : 'text-text-secondary hover:text-text-primary'
