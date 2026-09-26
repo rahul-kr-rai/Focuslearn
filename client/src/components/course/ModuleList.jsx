@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import {
   Play,
   CheckCircle2,
@@ -40,6 +41,24 @@ export default function ModuleList({
   const totalCount = videos.length;
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
+  // Refs for auto-scrolling to the active video
+  const listRef = useRef(null);
+  const itemRefs = useRef({});
+
+  useEffect(() => {
+    const container = listRef.current;
+    const item = itemRefs.current[activeVideoId];
+    if (!activeVideoId || !container || !item) return;
+    // Small delay to let the DOM settle after render
+    const timer = setTimeout(() => {
+      // Scroll only within the sidebar container, not the page
+      const itemTop = item.offsetTop - container.offsetTop;
+      const targetScroll = itemTop - 80;
+      container.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [activeVideoId]);
+
   return (
     <div className="flex flex-col h-full bg-bg-secondary border border-border-default rounded-xl overflow-hidden">
       {/* Header */}
@@ -63,7 +82,7 @@ export default function ModuleList({
       </div>
 
       {/* Video list */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
+      <div ref={listRef} className="flex-1 overflow-y-auto scrollbar-thin">
         {videos.map((video, index) => {
           const isActive = video.videoId === activeVideoId;
           const isCompleted =
@@ -75,6 +94,7 @@ export default function ModuleList({
           return (
             <button
               key={video._id || video.videoId}
+              ref={(el) => { itemRefs.current[video.videoId] = el; }}
               onClick={() => isEmbeddable && onVideoSelect?.(video)}
               disabled={!isEmbeddable}
               className={`

@@ -660,7 +660,7 @@ export default function StudyPage() {
           )}
         </button>
 
-        <div className="h-full p-3">
+        <div className="h-full -mt-12 px-2 pb-3">
           <ModuleList
             videos={course.videos || []}
             activeVideoId={activeVideo.videoId}
