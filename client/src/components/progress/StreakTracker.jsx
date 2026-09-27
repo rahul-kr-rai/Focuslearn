@@ -10,20 +10,30 @@ export default function StreakTracker({
   isStreakActiveToday = false,
   lastStudyDate = null,
 }) {
-  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const todayIndex = new Date().getDay();
+  const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const today = new Date();
 
-  // Create a 7-day activity mock / representation based on streak and today's status
-  const weekDays = daysOfWeek.map((day, index) => {
-    const isToday = index === todayIndex;
-    // Calculate if this day was part of streak
-    const diff = (todayIndex - index + 7) % 7;
-    const isActive = isStreakActiveToday ? diff < streak : diff > 0 && diff <= streak;
+  // Build a rolling 7-day window ending on today (left = 6 days ago, right = today)
+  // so streak days are always correctly positioned regardless of week boundaries.
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const daysAgo = 6 - i; // leftmost pill = 6 days ago, rightmost = today
+    const date = new Date(today);
+    date.setDate(today.getDate() - daysAgo);
+
+    const dayIndex = date.getDay();
+    const isToday = daysAgo === 0;
+
+    // A day is active if it falls within the current streak window
+    // daysAgo === 0 (today) is active only if isStreakActiveToday
+    // daysAgo > 0 is active if within streak range (accounting for whether today counts)
+    const isActive = isStreakActiveToday
+      ? daysAgo < streak
+      : daysAgo > 0 && daysAgo <= streak;
 
     return {
-      day,
+      day: dayLabels[dayIndex],
       isToday,
-      isActive: isActive || (isToday && isStreakActiveToday),
+      isActive,
     };
   });
 
