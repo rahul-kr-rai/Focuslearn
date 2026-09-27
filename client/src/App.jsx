@@ -46,8 +46,13 @@ function PublicRoute({ children }) {
 }
 
 function AppRoutes() {
+  const location = useLocation();
+
+  // Study page uses a full-viewport distraction-free layout — hide footer and lock height
+  const isStudyPage = location.pathname.startsWith('/study/');
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className={`flex flex-col ${isStudyPage ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
       <Navbar />
       <main className="flex-1">
         <Routes>
@@ -182,7 +187,7 @@ function AppRoutes() {
           />
         </Routes>
       </main>
-      <Footer />
+      {!isStudyPage && <Footer />}
     </div>
   );
 }

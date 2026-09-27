@@ -62,6 +62,11 @@ export default function StudyPage() {
   // Quiz state
   const [quizScoreBadge, setQuizScoreBadge] = useState(null);
 
+  // Reset scroll position on mount to prevent inherited scroll from previous pages
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch course and user progress data
   useEffect(() => {
     const fetchCourseAndProgress = async () => {
