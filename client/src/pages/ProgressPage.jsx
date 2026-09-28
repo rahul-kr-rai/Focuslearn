@@ -371,7 +371,8 @@ export default function ProgressPage() {
                 </span>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Desktop table — hidden on mobile */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-bg-primary/80 border-b border-border-default text-text-tertiary uppercase font-semibold text-[10px]">
                     <tr>
@@ -475,6 +476,90 @@ export default function ProgressPage() {
                     })}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile card layout — visible on mobile only */}
+              <div className="md:hidden divide-y divide-border-default/50">
+                {quizOverview.recentAttempts.map((att) => {
+                  const courseTitle = att.courseId?.title || 'Course';
+                  const lessonTitle = att.videoId?.title || 'Lesson';
+
+                  return (
+                    <div key={att._id} className="p-3 space-y-2.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-text-primary truncate">
+                            {lessonTitle}
+                          </p>
+                          <p className="text-[11px] text-text-tertiary truncate mt-0.5">
+                            {courseTitle}
+                          </p>
+                          <p className="text-[11px] text-text-tertiary font-mono mt-0.5">
+                            Attempt #{att.attemptNumber}
+                          </p>
+                        </div>
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                            att.passed
+                              ? 'bg-accent-success/15 text-accent-success border border-accent-success/25'
+                              : 'bg-accent-warm/15 text-accent-warm border border-accent-warm/25'
+                          }`}
+                        >
+                          {att.passed ? 'Passed' : 'Practice'}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text-tertiary">
+                        <span className="font-mono font-bold text-text-primary">
+                          {att.score}/{att.total}
+                          <span className={`ml-1 ${
+                            att.passed ? 'text-accent-success' : 'text-accent-warm'
+                          }`}>
+                            ({att.percentage}%)
+                          </span>
+                        </span>
+                        <span className="flex items-center gap-1 font-mono">
+                          <Clock className="w-3 h-3" />
+                          {formatSeconds(att.timeTakenSeconds)}
+                        </span>
+                        <span>
+                          {new Date(att.completedAt || att.createdAt).toLocaleString(
+                            undefined,
+                            { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+                          )}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          icon={Eye}
+                          onClick={() => navigate(`/quiz/attempt/${att._id}`)}
+                          className="flex-1 justify-center"
+                        >
+                          Review
+                        </Button>
+                        {att.courseId?._id && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={RotateCcw}
+                            onClick={() => {
+                              const vidId = att.videoId?.videoId || att.videoId?._id;
+                              navigate(
+                                `/course/${att.courseId._id}/quiz/${vidId}?retake=true`
+                              );
+                            }}
+                            className="flex-1 justify-center"
+                          >
+                            Retake
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </Card>
           </div>

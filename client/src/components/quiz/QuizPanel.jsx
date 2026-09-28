@@ -1057,7 +1057,8 @@ export default function QuizPanel({
 
           {/* Comparison Table */}
           <Card padding="none" className="overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop table — hidden on mobile */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-bg-primary/80 border-b border-border-default text-text-tertiary uppercase font-semibold text-[10px]">
                   <tr>
@@ -1125,6 +1126,63 @@ export default function QuizPanel({
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile card layout — visible on mobile only */}
+            <div className="md:hidden divide-y divide-border-default/50">
+              {attempts.map((att) => (
+                <div key={att._id} className="p-3 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-text-primary">
+                        Attempt #{att.attemptNumber}
+                      </p>
+                      <p className="text-[11px] text-text-tertiary mt-0.5">
+                        {new Date(att.completedAt || att.createdAt).toLocaleString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </p>
+                    </div>
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                        att.passed
+                          ? 'bg-accent-success/15 text-accent-success border border-accent-success/25'
+                          : 'bg-accent-warm/15 text-accent-warm border border-accent-warm/25'
+                      }`}
+                    >
+                      {att.passed ? 'Passed' : 'Review'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-text-tertiary">
+                      <span className="font-mono font-bold text-text-primary">
+                        {att.score}/{att.total}
+                        <span className={`ml-1 ${
+                          att.passed ? 'text-accent-success' : 'text-accent-warm'
+                        }`}>
+                          ({att.percentage}%)
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-1 font-mono">
+                        <Clock className="w-3 h-3" />
+                        {formatSeconds(att.timeTakenSeconds)}
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={Eye}
+                      onClick={() => navigate(`/quiz/attempt/${att._id}`)}
+                    >
+                      Review
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           </Card>
         </div>

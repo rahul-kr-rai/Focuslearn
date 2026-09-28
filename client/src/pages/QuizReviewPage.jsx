@@ -111,10 +111,10 @@ export default function QuizReviewPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 animate-fade-in space-y-6 sm:space-y-8">
+    <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 animate-fade-in space-y-5 sm:space-y-8">
       {/* ── Breadcrumb & Top Navigation ── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center justify-between sm:gap-4 border-b border-border-default pb-4">
-        <div className="flex items-center gap-2 text-xs text-text-secondary flex-wrap min-h-[44px] sm:min-h-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 text-xs text-text-secondary flex-wrap min-h-[44px] sm:min-h-0">
           <Link
             to={courseId ? `/course/${courseId}/quizzes` : '/progress'}
             className="hover:text-accent-primary transition-colors flex items-center gap-1"
@@ -136,13 +136,13 @@ export default function QuizReviewPage() {
           )}
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <Button
             variant="primary"
             size="sm"
             icon={RotateCcw}
             onClick={handleRetake}
-            className="flex-1 sm:flex-initial justify-center"
+            className="flex-1 sm:flex-initial justify-center text-xs sm:text-sm"
           >
             Retake
           </Button>
@@ -160,22 +160,22 @@ export default function QuizReviewPage() {
 
       {/* ── Top Score & Details Hero Card ── */}
       <div
-        className={`rounded-2xl border p-4 sm:p-6 md:p-8 backdrop-blur-md shadow-xl transition-all ${
+        className={`rounded-2xl border p-3 sm:p-6 md:p-8 backdrop-blur-md shadow-xl transition-all ${
           passed
             ? 'border-accent-success/40 bg-gradient-to-br from-accent-success/15 via-bg-secondary/80 to-bg-secondary'
             : 'border-accent-warm/40 bg-gradient-to-br from-accent-warm/15 via-bg-secondary/80 to-bg-secondary'
         }`}
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-start sm:items-center gap-4">
+          <div className="flex items-start sm:items-center gap-3 sm:gap-4">
             <div
-              className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${
+              className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${
                 passed
                   ? 'bg-accent-success/20 text-accent-success border border-accent-success/30'
                   : 'bg-accent-warm/20 text-accent-warm border border-accent-warm/30'
               }`}
             >
-              <Award className="w-8 h-8" />
+              <Award className="w-6 h-6 sm:w-8 sm:h-8" />
             </div>
 
             <div className="space-y-1">
@@ -194,7 +194,7 @@ export default function QuizReviewPage() {
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-black text-text-primary tracking-tight">
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-black text-text-primary tracking-tight leading-snug">
                 {video?.title || 'Lesson Quiz Review'}
               </h1>
               <p className="text-xs text-text-secondary">
@@ -204,10 +204,10 @@ export default function QuizReviewPage() {
           </div>
 
           {/* Big Score Display */}
-          <div className="flex items-center gap-4 sm:gap-6 p-3 sm:p-4 rounded-xl bg-bg-primary/70 border border-border-default self-start md:self-center shrink-0">
+          <div className="flex items-center gap-3 sm:gap-6 p-2.5 sm:p-4 rounded-xl bg-bg-primary/70 border border-border-default self-start md:self-center shrink-0">
             <div>
               <span className="text-[10px] font-bold uppercase text-text-tertiary">Score</span>
-              <p className="text-2xl font-black font-mono text-text-primary">
+              <p className="text-xl sm:text-2xl font-black font-mono text-text-primary">
                 {score} <span className="text-sm font-normal text-text-tertiary">/ {total}</span>
               </p>
             </div>
@@ -215,7 +215,7 @@ export default function QuizReviewPage() {
             <div>
               <span className="text-[10px] font-bold uppercase text-text-tertiary">Accuracy</span>
               <p
-                className={`text-2xl font-black font-mono ${
+                className={`text-xl sm:text-2xl font-black font-mono ${
                   passed ? 'text-accent-success' : 'text-accent-warm'
                 }`}
               >
@@ -226,9 +226,9 @@ export default function QuizReviewPage() {
         </div>
 
         {/* Detailed Metrics Strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-border-default/60 text-xs">
-          <div className="p-3 rounded-xl bg-bg-primary/50 border border-border-subtle">
-            <span className="text-text-tertiary flex items-center gap-1 mb-1">
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border-default/60 text-xs">
+          <div className="p-2.5 sm:p-3 rounded-xl bg-bg-primary/50 border border-border-subtle">
+            <span className="text-text-tertiary flex items-center gap-1 mb-0.5 sm:mb-1">
               <Clock className="w-3.5 h-3.5 text-accent-secondary" />
               Time Taken:
             </span>
@@ -237,8 +237,8 @@ export default function QuizReviewPage() {
             </span>
           </div>
 
-          <div className="p-3 rounded-xl bg-bg-primary/50 border border-border-subtle">
-            <span className="text-text-tertiary flex items-center gap-1 mb-1">
+          <div className="p-2.5 sm:p-3 rounded-xl bg-bg-primary/50 border border-border-subtle">
+            <span className="text-text-tertiary flex items-center gap-1 mb-0.5 sm:mb-1">
               <Calendar className="w-3.5 h-3.5 text-accent-primary" />
               Date Completed:
             </span>
@@ -252,20 +252,20 @@ export default function QuizReviewPage() {
             </span>
           </div>
 
-          <div className="p-3 rounded-xl bg-accent-success/10 border border-accent-success/20">
-            <span className="text-accent-success flex items-center gap-1 mb-1 font-semibold">
+          <div className="p-2.5 sm:p-3 rounded-xl bg-accent-success/10 border border-accent-success/20">
+            <span className="text-accent-success flex items-center gap-1 mb-0.5 sm:mb-1 font-semibold">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              Correct Answers:
+              Correct:
             </span>
             <span className="font-bold text-accent-success font-mono text-sm">
               {correctCount} of {total}
             </span>
           </div>
 
-          <div className="p-3 rounded-xl bg-accent-danger/10 border border-accent-danger/20">
-            <span className="text-accent-danger flex items-center gap-1 mb-1 font-semibold">
+          <div className="p-2.5 sm:p-3 rounded-xl bg-accent-danger/10 border border-accent-danger/20">
+            <span className="text-accent-danger flex items-center gap-1 mb-0.5 sm:mb-1 font-semibold">
               <XCircle className="w-3.5 h-3.5" />
-              Incorrect Answers:
+              Incorrect:
             </span>
             <span className="font-bold text-accent-danger font-mono text-sm">
               {incorrectCount} of {total}
@@ -305,58 +305,58 @@ export default function QuizReviewPage() {
 
       {/* ── Complete Question-by-Question Full Page Review ── */}
       <div className="space-y-6">
-        <div className="flex items-center justify-between pb-2 border-b border-border-default">
-          <h2 className="text-base font-bold text-text-primary flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-accent-primary" />
-            <span>Complete Question Breakdown &amp; Explanations</span>
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-border-default">
+          <h2 className="text-sm sm:text-base font-bold text-text-primary flex items-center gap-2">
+            <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-accent-primary shrink-0" />
+            <span>Question Breakdown</span>
           </h2>
           <span className="text-xs text-text-tertiary font-mono">
-            {answers.length} Questions Evaluated
+            {answers.length} Questions
           </span>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {answers.map((item, idx) => {
             const isCorrect = item.isCorrect;
 
             return (
               <Card
                 key={item.questionId || idx}
-                padding="lg"
-                className={`transition-all ${
+                padding="none"
+                className={`transition-all p-3 sm:p-5 md:p-8 ${
                   isCorrect
                     ? 'border-accent-success/40 bg-bg-secondary/60'
                     : 'border-accent-danger/40 bg-bg-secondary/60'
                 }`}
               >
                 {/* Question Statement */}
-                <div className="flex items-start gap-3.5 mb-4">
+                <div className="flex items-start gap-2.5 sm:gap-3.5 mb-3 sm:mb-4">
                   <div
-                    className={`shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
+                    className={`shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center text-xs font-bold ${
                       isCorrect
                         ? 'bg-accent-success/20 text-accent-success border border-accent-success/30'
                         : 'bg-accent-danger/20 text-accent-danger border border-accent-danger/30'
                     }`}
                   >
                     {isCorrect ? (
-                      <CheckCircle2 className="w-5 h-5" />
+                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     ) : (
-                      <XCircle className="w-5 h-5" />
+                      <XCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                     )}
                   </div>
 
-                  <div className="space-y-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-text-tertiary">
+                  <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-text-tertiary">
                       Question {idx + 1}
                     </span>
-                    <h3 className="text-base font-semibold text-text-primary leading-relaxed">
+                    <h3 className="text-sm sm:text-base font-semibold text-text-primary leading-snug sm:leading-relaxed">
                       {item.question}
                     </h3>
                   </div>
                 </div>
 
                 {/* 4 Options Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 pl-0 sm:pl-11">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4 pl-0 sm:pl-11">
                   {item.options?.map((opt, optIdx) => {
                     const isUserSelection = item.selectedOption === optIdx;
                     const isCorrectAnswer = item.correctAnswer === optIdx;
@@ -368,27 +368,27 @@ export default function QuizReviewPage() {
                     if (isCorrectAnswer) {
                       cardStyle =
                         'border-accent-success bg-accent-success/15 text-accent-success font-semibold shadow-sm';
-                      badge = isUserSelection ? '✓ Correct Choice (Your Choice)' : '✓ Correct Answer';
+                      badge = isUserSelection ? '✓ Your Pick' : '✓ Correct';
                     } else if (isUserSelection && !isCorrectAnswer) {
                       cardStyle =
                         'border-accent-danger bg-accent-danger/15 text-accent-danger font-semibold shadow-sm';
-                      badge = '✗ Your Choice';
+                      badge = '✗ Your Pick';
                     }
 
                     return (
                       <div
                         key={optIdx}
-                        className={`p-3.5 rounded-xl border text-xs flex items-center justify-between gap-3 ${cardStyle}`}
+                        className={`p-2.5 sm:p-3.5 rounded-lg sm:rounded-xl border text-xs flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 xs:gap-2 sm:gap-3 ${cardStyle}`}
                       >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <span className="w-6 h-6 rounded-md bg-bg-primary/80 flex items-center justify-center font-mono text-[11px] font-bold shrink-0 opacity-80">
+                        <div className="flex items-start xs:items-center gap-2 min-w-0">
+                          <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-bg-primary/80 flex items-center justify-center font-mono text-[10px] sm:text-[11px] font-bold shrink-0 opacity-80 mt-0.5 xs:mt-0">
                             {String.fromCharCode(65 + optIdx)}
                           </span>
                           <span className="leading-snug break-words">{opt}</span>
                         </div>
 
                         {badge && (
-                          <span className="text-[10px] uppercase font-bold shrink-0 px-2 py-0.5 rounded bg-bg-primary/70 border border-current mt-1 sm:mt-0 self-end sm:self-center whitespace-nowrap">
+                          <span className="text-[9px] sm:text-[10px] uppercase font-bold shrink-0 px-1.5 sm:px-2 py-0.5 rounded bg-bg-primary/70 border border-current self-start xs:self-center whitespace-nowrap">
                             {badge}
                           </span>
                         )}
@@ -399,10 +399,10 @@ export default function QuizReviewPage() {
 
                 {/* AI Explanation Card */}
                 {item.explanation && (
-                  <div className="ml-0 sm:ml-11 p-4 rounded-xl bg-bg-tertiary/40 border border-border-default text-xs text-text-secondary leading-relaxed">
+                  <div className="ml-0 sm:ml-11 p-3 sm:p-4 rounded-lg sm:rounded-xl bg-bg-tertiary/40 border border-border-default text-xs text-text-secondary leading-relaxed">
                     <div className="flex items-center gap-1.5 font-bold text-text-primary mb-1">
-                      <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
-                      <span>Conceptual Explanation:</span>
+                      <Sparkles className="w-3.5 h-3.5 text-accent-primary shrink-0" />
+                      <span>Explanation:</span>
                     </div>
                     <p>{item.explanation}</p>
                   </div>
@@ -414,16 +414,17 @@ export default function QuizReviewPage() {
       </div>
 
       {/* ── Bottom Actions & Pagination Footer ── */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 rounded-2xl bg-bg-secondary border border-border-default">
-        <div className="flex items-center gap-2 justify-center sm:justify-start">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-3 sm:p-5 rounded-2xl bg-bg-secondary border border-border-default">
+        <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
           {prevAttempt && (
             <Button
               variant="secondary"
               size="sm"
               icon={ChevronLeft}
               onClick={() => navigate(`/quiz/attempt/${prevAttempt._id}`)}
+              className="text-xs sm:text-sm"
             >
-              Previous Attempt (#{prevAttempt.attemptNumber})
+              <span className="hidden xs:inline">Previous</span> #{prevAttempt.attemptNumber}
             </Button>
           )}
 
@@ -432,26 +433,28 @@ export default function QuizReviewPage() {
               variant="secondary"
               size="sm"
               onClick={() => navigate(`/quiz/attempt/${nextAttempt._id}`)}
+              className="text-xs sm:text-sm"
             >
-              <span>Next Attempt (#{nextAttempt.attemptNumber})</span>
-              <ChevronRight className="w-4 h-4 ml-1" />
+              <span><span className="hidden xs:inline">Next</span> #{nextAttempt.attemptNumber}</span>
+              <ChevronRight className="w-4 h-4 ml-0.5" />
             </Button>
           )}
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             variant="primary"
+            size="sm"
             icon={RotateCcw}
             onClick={handleRetake}
-            className="flex-1 sm:flex-initial justify-center"
+            className="flex-1 sm:flex-initial justify-center text-xs sm:text-sm"
           >
             Retake Quiz
           </Button>
 
           <Link to={courseId ? `/course/${courseId}/quizzes` : '/progress'} className="flex-1 sm:flex-initial">
-            <Button variant="secondary" className="w-full justify-center">
-              {courseId ? 'Course Quizzes' : 'Progress'}
+            <Button variant="secondary" size="sm" className="w-full justify-center text-xs sm:text-sm">
+              {courseId ? 'Quizzes' : 'Progress'}
             </Button>
           </Link>
         </div>
