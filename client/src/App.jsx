@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Loader from './components/ui/Loader';
+import ScrollToTop from './components/ui/ScrollToTop';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -188,6 +189,7 @@ function AppRoutes() {
         </Routes>
       </main>
       {!isStudyPage && <Footer />}
+      {!isStudyPage && <ScrollToTop />}
     </div>
   );
 }
