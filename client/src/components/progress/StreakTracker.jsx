@@ -53,11 +53,10 @@ export default function StreakTracker({
                 {streak} {streak === 1 ? 'Day' : 'Days'}
               </h3>
               <span
-                className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                  isStreakActiveToday
-                    ? 'bg-accent-success/15 text-accent-success border border-accent-success/30'
-                    : 'bg-accent-warm/15 text-accent-warm border border-accent-warm/30'
-                }`}
+                className={`text-xs px-2 py-0.5 rounded-full font-medium ${isStreakActiveToday
+                  ? 'bg-accent-success/15 text-accent-success border border-accent-success/30'
+                  : 'bg-accent-warm/15 text-accent-warm border border-accent-warm/30'
+                  }`}
               >
                 {isStreakActiveToday ? 'Active Today' : 'Pending Study'}
               </span>
@@ -75,36 +74,34 @@ export default function StreakTracker({
           <span>
             {lastStudyDate
               ? `Last active: ${new Date(lastStudyDate).toLocaleDateString(undefined, {
-                  month: 'short',
-                  day: 'numeric',
-                })}`
+                month: 'short',
+                day: 'numeric',
+              })}`
               : 'Start your streak today!'}
           </span>
         </div>
       </div>
 
       {/* Week Day Indicator Pills */}
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1.5 md:gap-13 md:max-w-xl mx-auto">
         {weekDays.map(({ day, isToday, isActive }) => (
           <div
             key={day}
-            className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all ${
-              isActive
-                ? 'bg-accent-warm/15 border-accent-warm/40 text-accent-warm'
-                : isToday
+            className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all ${isActive
+              ? 'bg-accent-warm/15 border-accent-warm/40 text-accent-warm'
+              : isToday
                 ? 'bg-bg-tertiary/80 border-accent-primary/50 text-text-primary'
                 : 'bg-bg-tertiary/20 border-border-subtle text-text-tertiary'
-            }`}
+              }`}
           >
             <span className="text-[10px] font-semibold uppercase">{day}</span>
             <div
-              className={`w-6 h-6 mt-1.5 rounded-full flex items-center justify-center text-xs font-bold ${
-                isActive
-                  ? 'bg-accent-warm text-slate-950 shadow-sm'
-                  : isToday
+              className={`w-6 h-6 mt-1.5 rounded-full flex items-center justify-center text-xs font-bold ${isActive
+                ? 'bg-accent-warm text-slate-950 shadow-sm'
+                : isToday
                   ? 'bg-accent-primary/20 text-accent-primary'
                   : 'bg-bg-tertiary text-text-tertiary'
-              }`}
+                }`}
             >
               {isActive ? (
                 <Check className="w-3.5 h-3.5 stroke-[3]" />
@@ -125,8 +122,8 @@ export default function StreakTracker({
           {streak >= 30
             ? '🏆 Unstoppable! You unlocked the Monthly Master badge.'
             : streak >= 7
-            ? `🔥 On fire! Keep going to reach the 30-day streak milestone.`
-            : `🎯 Goal: Reach a 7-day streak to earn your first consistency badge!`}
+              ? `🔥 On fire! Keep going to reach the 30-day streak milestone.`
+              : `🎯 Goal: Reach a 7-day streak to earn your first consistency badge!`}
         </span>
       </div>
     </Card>
