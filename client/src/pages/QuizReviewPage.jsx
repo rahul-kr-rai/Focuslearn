@@ -10,7 +10,6 @@ import {
   Award,
   BookOpen,
   Sparkles,
-  Play,
   Layers,
   ChevronLeft,
   ChevronRight,
@@ -92,6 +91,24 @@ export default function QuizReviewPage() {
   const correctCount = answers.filter((a) => a.isCorrect).length;
   const incorrectCount = total - correctCount;
 
+  const dateValue = completedAt || attempt.createdAt;
+  const dateObj = dateValue ? new Date(dateValue) : null;
+  const isValidDate = dateObj && !isNaN(dateObj.getTime());
+  const completedDateFormatted = isValidDate
+    ? dateObj.toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : 'N/A';
+  const completedTimeFormatted = isValidDate
+    ? dateObj.toLocaleTimeString(undefined, {
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : '';
+  const fullTimestamp = isValidDate ? dateObj.toLocaleString() : undefined;
+
   // Sorting all attempts in ascending order for prev/next
   const sortedAttempts = [...allAttempts].sort((a, b) => a.attemptNumber - b.attemptNumber);
   const currentIndex = sortedAttempts.findIndex((a) => a._id === attempt._id);
@@ -160,31 +177,31 @@ export default function QuizReviewPage() {
 
       {/* ── Top Score & Details Hero Card ── */}
       <div
-        className={`rounded-2xl border p-3 sm:p-6 md:p-8 backdrop-blur-md shadow-xl transition-all ${
+        className={`rounded-2xl border p-3 sm:p-6 md:p-7 backdrop-blur-md shadow-xl transition-all ${
           passed
             ? 'border-accent-success/40 bg-gradient-to-br from-accent-success/15 via-bg-secondary/80 to-bg-secondary'
             : 'border-accent-warm/40 bg-gradient-to-br from-accent-warm/15 via-bg-secondary/80 to-bg-secondary'
         }`}
       >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-start sm:items-center gap-3 sm:gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
+          <div className="flex items-start sm:items-center gap-3 sm:gap-3.5 min-w-0">
             <div
-              className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${
+              className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl flex items-center justify-center shrink-0 shadow-md ${
                 passed
                   ? 'bg-accent-success/20 text-accent-success border border-accent-success/30'
                   : 'bg-accent-warm/20 text-accent-warm border border-accent-warm/30'
               }`}
             >
-              <Award className="w-6 h-6 sm:w-8 sm:h-8" />
+              <Award className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-text-tertiary">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-text-tertiary">
                   Attempt #{attemptNumber} of {allAttempts.length}
                 </span>
                 <span
-                  className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                     passed
                       ? 'bg-accent-success/20 text-accent-success border border-accent-success/30'
                       : 'bg-accent-warm/20 text-accent-warm border border-accent-warm/30'
@@ -194,28 +211,28 @@ export default function QuizReviewPage() {
                 </span>
               </div>
 
-              <h1 className="text-lg sm:text-2xl md:text-3xl font-black text-text-primary tracking-tight leading-snug">
+              <h1 className="text-base sm:text-xl font-bold text-text-primary tracking-tight leading-snug break-words">
                 {video?.title || 'Lesson Quiz Review'}
               </h1>
-              <p className="text-xs text-text-secondary">
-                Course: <strong className="text-text-primary">{course?.title}</strong>
+              <p className="text-xs text-text-secondary truncate">
+                Course: <strong className="text-text-primary font-medium">{course?.title}</strong>
               </p>
             </div>
           </div>
 
           {/* Big Score Display */}
-          <div className="flex items-center gap-3 sm:gap-6 p-2.5 sm:p-4 rounded-xl bg-bg-primary/70 border border-border-default self-start md:self-center shrink-0">
+          <div className="flex items-center gap-3 sm:gap-5 px-3 py-2 sm:px-4 sm:py-3 rounded-xl bg-bg-primary/70 border border-border-default self-start md:self-center shrink-0">
             <div>
-              <span className="text-[10px] font-bold uppercase text-text-tertiary">Score</span>
-              <p className="text-xl sm:text-2xl font-black font-mono text-text-primary">
-                {score} <span className="text-sm font-normal text-text-tertiary">/ {total}</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-text-tertiary">Score</span>
+              <p className="text-lg sm:text-xl font-black font-mono text-text-primary">
+                {score} <span className="text-xs font-normal text-text-tertiary">/ {total}</span>
               </p>
             </div>
-            <div className="w-px h-10 bg-border-default" />
+            <div className="w-px h-8 bg-border-default" />
             <div>
-              <span className="text-[10px] font-bold uppercase text-text-tertiary">Accuracy</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-text-tertiary">Accuracy</span>
               <p
-                className={`text-xl sm:text-2xl font-black font-mono ${
+                className={`text-lg sm:text-xl font-black font-mono ${
                   passed ? 'text-accent-success' : 'text-accent-warm'
                 }`}
               >
@@ -225,51 +242,73 @@ export default function QuizReviewPage() {
           </div>
         </div>
 
-        {/* Detailed Metrics Strip */}
-        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border-default/60 text-xs">
-          <div className="p-2.5 sm:p-3 rounded-xl bg-bg-primary/50 border border-border-subtle">
-            <span className="text-text-tertiary flex items-center gap-1 mb-0.5 sm:mb-1">
-              <Clock className="w-3.5 h-3.5 text-accent-secondary" />
-              Time Taken:
-            </span>
-            <span className="font-bold text-text-primary font-mono text-sm">
-              {formatSeconds(timeTakenSeconds)}
-            </span>
+        {/* Detailed Metrics Strip: Perfectly Aligned Time, Date, Correct & Incorrect */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mt-4 sm:mt-5 pt-4 sm:pt-5 border-t border-border-default/60">
+          {/* Time Taken */}
+          <div className="flex flex-col justify-between h-full p-2.5 sm:p-3.5 rounded-xl bg-bg-primary/50 border border-border-subtle hover:border-border-default transition-colors">
+            <div className="flex items-center gap-1.5 text-text-tertiary mb-1.5 sm:mb-2">
+              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent-secondary shrink-0" />
+              <span className="text-[11px] sm:text-xs font-medium text-text-secondary truncate">Time Taken</span>
+            </div>
+            <div>
+              <p className="font-mono text-sm sm:text-base font-bold text-text-primary leading-tight">
+                {formatSeconds(timeTakenSeconds)}
+              </p>
+              <p className="text-[10px] sm:text-[11px] text-text-tertiary mt-0.5 truncate">
+                Total duration
+              </p>
+            </div>
           </div>
 
-          <div className="p-2.5 sm:p-3 rounded-xl bg-bg-primary/50 border border-border-subtle">
-            <span className="text-text-tertiary flex items-center gap-1 mb-0.5 sm:mb-1">
-              <Calendar className="w-3.5 h-3.5 text-accent-primary" />
-              Date Completed:
-            </span>
-            <span className="font-semibold text-text-primary text-xs">
-              {completedAt
-                ? new Date(completedAt).toLocaleString(undefined, {
-                    dateStyle: 'medium',
-                    timeStyle: 'short',
-                  })
-                : 'N/A'}
-            </span>
+          {/* Date Completed */}
+          <div className="flex flex-col justify-between h-full p-2.5 sm:p-3.5 rounded-xl bg-bg-primary/50 border border-border-subtle hover:border-border-default transition-colors">
+            <div className="flex items-center gap-1.5 text-text-tertiary mb-1.5 sm:mb-2">
+              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent-primary shrink-0" />
+              <span className="text-[11px] sm:text-xs font-medium text-text-secondary truncate">Date Completed</span>
+            </div>
+            <div>
+              <p
+                className="text-xs sm:text-sm font-bold text-text-primary leading-tight truncate"
+                title={fullTimestamp}
+              >
+                {completedDateFormatted}
+              </p>
+              <p className="text-[10px] sm:text-[11px] text-text-tertiary font-mono mt-0.5 truncate">
+                {completedTimeFormatted || 'Recorded'}
+              </p>
+            </div>
           </div>
 
-          <div className="p-2.5 sm:p-3 rounded-xl bg-accent-success/10 border border-accent-success/20">
-            <span className="text-accent-success flex items-center gap-1 mb-0.5 sm:mb-1 font-semibold">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              Correct:
-            </span>
-            <span className="font-bold text-accent-success font-mono text-sm">
-              {correctCount} of {total}
-            </span>
+          {/* Correct */}
+          <div className="flex flex-col justify-between h-full p-2.5 sm:p-3.5 rounded-xl bg-accent-success/10 border border-accent-success/20 hover:border-accent-success/35 transition-colors">
+            <div className="flex items-center gap-1.5 text-accent-success mb-1.5 sm:mb-2">
+              <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="text-[11px] sm:text-xs font-medium truncate">Correct</span>
+            </div>
+            <div>
+              <p className="font-mono text-sm sm:text-base font-bold text-accent-success leading-tight">
+                {correctCount} <span className="text-xs font-normal opacity-70">/ {total}</span>
+              </p>
+              <p className="text-[10px] sm:text-[11px] text-accent-success/80 font-medium mt-0.5 truncate">
+                {total > 0 ? Math.round((correctCount / total) * 100) : 0}% accuracy
+              </p>
+            </div>
           </div>
 
-          <div className="p-2.5 sm:p-3 rounded-xl bg-accent-danger/10 border border-accent-danger/20">
-            <span className="text-accent-danger flex items-center gap-1 mb-0.5 sm:mb-1 font-semibold">
-              <XCircle className="w-3.5 h-3.5" />
-              Incorrect:
-            </span>
-            <span className="font-bold text-accent-danger font-mono text-sm">
-              {incorrectCount} of {total}
-            </span>
+          {/* Incorrect */}
+          <div className="flex flex-col justify-between h-full p-2.5 sm:p-3.5 rounded-xl bg-accent-danger/10 border border-accent-danger/20 hover:border-accent-danger/35 transition-colors">
+            <div className="flex items-center gap-1.5 text-accent-danger mb-1.5 sm:mb-2">
+              <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="text-[11px] sm:text-xs font-medium truncate">Incorrect</span>
+            </div>
+            <div>
+              <p className="font-mono text-sm sm:text-base font-bold text-accent-danger leading-tight">
+                {incorrectCount} <span className="text-xs font-normal opacity-70">/ {total}</span>
+              </p>
+              <p className="text-[10px] sm:text-[11px] text-accent-danger/80 font-medium mt-0.5 truncate">
+                {total > 0 ? Math.round((incorrectCount / total) * 100) : 0}% incorrect
+              </p>
+            </div>
           </div>
         </div>
 
