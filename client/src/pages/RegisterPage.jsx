@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, User, UserPlus, GraduationCap } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, GraduationCap, Copy, Check, Sparkles } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Card from '../components/ui/Card';
+import { DEMO_CREDENTIALS } from '../constants/demoCredentials';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -12,6 +13,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [copiedField, setCopiedField] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const { register, error, clearError } = useAuth();
   const navigate = useNavigate();
@@ -42,6 +44,12 @@ export default function RegisterPage() {
     }
   };
 
+  const copyToClipboard = (text, field) => {
+    navigator.clipboard?.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 animate-fade-in">
       {/* Background decoration */}
@@ -52,7 +60,7 @@ export default function RegisterPage() {
 
       <Card className="relative w-full max-w-md" padding="lg">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent-primary/10 mb-4">
             <GraduationCap className="w-7 h-7 text-accent-primary" />
           </div>
@@ -60,6 +68,56 @@ export default function RegisterPage() {
           <p className="text-sm text-text-secondary">
             Start transforming playlists into focused learning
           </p>
+        </div>
+
+        {/* Demo Credentials Card */}
+        <div className="relative mt-3 mb-5 px-3 pt-3.5 pb-2 rounded-lg border border-amber-500/40 bg-amber-500/10 text-xs">
+          <div className="absolute -top-2.5 left-1/2 -translate-x-1/2">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-bg-secondary text-amber-300 border border-amber-500/50 shadow-sm whitespace-nowrap">
+              <Sparkles className="w-3 h-3 text-amber-400" />
+              Try demo to explore this project
+            </span>
+          </div>
+          <div className="flex items-center justify-between py-0.5">
+            <span className="text-text-secondary">
+              Demo user: <span className="font-mono text-text-primary font-medium">{DEMO_CREDENTIALS.email}</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => copyToClipboard(DEMO_CREDENTIALS.email, 'email')}
+              className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 transition-colors p-1 rounded hover:bg-amber-500/20"
+              title="Copy demo user"
+              aria-label="Copy demo user"
+            >
+              {copiedField === 'email' ? (
+                <span className="text-emerald-400 flex items-center gap-1 text-[11px]">
+                  <Check className="w-3.5 h-3.5" /> Copied
+                </span>
+              ) : (
+                <Copy className="w-3.5 h-3.5" />
+              )}
+            </button>
+          </div>
+          <div className="flex items-center justify-between py-0.5">
+            <span className="text-text-secondary">
+              Demo password: <span className="font-mono text-text-primary font-medium">{DEMO_CREDENTIALS.password}</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => copyToClipboard(DEMO_CREDENTIALS.password, 'password')}
+              className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 transition-colors p-1 rounded hover:bg-amber-500/20"
+              title="Copy demo password"
+              aria-label="Copy demo password"
+            >
+              {copiedField === 'password' ? (
+                <span className="text-emerald-400 flex items-center gap-1 text-[11px]">
+                  <Check className="w-3.5 h-3.5" /> Copied
+                </span>
+              ) : (
+                <Copy className="w-3.5 h-3.5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Error Alert */}
@@ -70,7 +128,7 @@ export default function RegisterPage() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Full Name"
             type="text"
@@ -117,6 +175,7 @@ export default function RegisterPage() {
             loading={loading}
             icon={UserPlus}
             size="lg"
+            className="mt-2"
           >
             Create Account
           </Button>
