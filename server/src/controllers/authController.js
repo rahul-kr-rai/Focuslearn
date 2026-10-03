@@ -4,6 +4,7 @@ import User from '../models/User.js';
 import env from '../config/env.js';
 import { success, error } from '../utils/apiResponse.js';
 import { sendPasswordResetEmail } from '../services/emailService.js';
+import { DEMO_USER, resetDemoUserProgress } from '../utils/seedDemoUser.js';
 
 /**
  * Generate JWT token for a user.
@@ -92,6 +93,12 @@ export const login = async (req, res, next) => {
       return error(res, 'Invalid email or password.', 401);
     }
 
+    // If logging in as demo user, reset progress to a clean slate (0% progress, 0 streak, 0 minutes)
+    if (user.email === DEMO_USER.email) {
+      await resetDemoUserProgress(user._id);
+      user.studyStreak = 0;
+    }
+
     // Generate token
     const token = generateToken(user._id);
 
@@ -102,7 +109,7 @@ export const login = async (req, res, next) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
-        studyStreak: user.studyStreak,
+        studyStreak: user.studyStreak || 0,
       },
     });
   } catch (err) {

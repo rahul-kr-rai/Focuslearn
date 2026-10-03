@@ -3,6 +3,7 @@ import Course from '../models/Course.js';
 import Video from '../models/Video.js';
 import User from '../models/User.js';
 import { success, error, ApiError } from '../utils/apiResponse.js';
+import { resetDemoUserProgress } from '../utils/seedDemoUser.js';
 
 /**
  * Helper to update user study streak based on last study date.
@@ -319,6 +320,28 @@ export async function getProgressDashboard(req, res, next) {
         now.getDate() === last.getDate();
     }
 
+    // If this is the demo user and they still have old seed progress, clean it right away
+    if (
+      user.email === 'demo@gmail.com' &&
+      (user.studyStreak > 0 || totalStudyTimeMinutes > 0 || totalCompletedVideos > 0)
+    ) {
+      await resetDemoUserProgress(userId);
+      user.studyStreak = 0;
+      user.lastStudyDate = null;
+      totalCompletedVideos = 0;
+      totalStudyTimeMinutes = 0;
+      completedCoursesCount = 0;
+      inProgressCoursesCount = 0;
+      notStartedCoursesCount = courses.length;
+      overallCompletionPercent = 0;
+      isStreakActiveToday = false;
+      courseBreakdown.forEach((c) => {
+        c.completedVideosCount = 0;
+        c.completionPercent = 0;
+        c.studyTimeMinutes = 0;
+      });
+    }
+
     return success(
       res,
       {
@@ -341,6 +364,20 @@ export async function getProgressDashboard(req, res, next) {
       },
       200
     );
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * POST /api/progress/reset-demo
+ * On-demand reset of demo user progress.
+ */
+export async function resetDemoProgressHandler(req, res, next) {
+  try {
+    const userId = req.user._id;
+    await resetDemoUserProgress(userId);
+    return success(res, null, 200, 'Demo progress has been reset to clean slate.');
   } catch (err) {
     next(err);
   }

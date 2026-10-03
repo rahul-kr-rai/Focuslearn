@@ -28,10 +28,9 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   const navLinkClass = (path) =>
-    `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-      isActive(path)
-        ? 'bg-accent-primary/10 text-accent-primary'
-        : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
+    `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(path)
+      ? 'bg-accent-primary/10 text-accent-primary'
+      : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
     }`;
 
   return (

@@ -172,8 +172,12 @@ export const createCourse = async (req, res, next) => {
  */
 export const getCourses = async (req, res, next) => {
   try {
+    const user = await User.findById(req.userId).select('enrolledCourses');
     const courses = await Course.find({
-      enrolledUsers: req.userId,
+      $or: [
+        { enrolledUsers: req.userId },
+        { _id: { $in: user?.enrolledCourses || [] } },
+      ],
       isActive: true,
     })
       .sort({ updatedAt: -1 })

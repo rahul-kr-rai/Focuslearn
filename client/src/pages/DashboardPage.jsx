@@ -15,6 +15,7 @@ import {
   Sparkles,
   BarChart3,
   ArrowRight,
+  RotateCcw,
 } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -51,9 +52,22 @@ export default function DashboardPage() {
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState(null);
   const [importProgress, setImportProgress] = useState('');
+  const [resettingDemo, setResettingDemo] = useState(false);
 
   // Delete state
   const [deletingCourseId, setDeletingCourseId] = useState(null);
+
+  const handleResetDemo = async () => {
+    try {
+      setResettingDemo(true);
+      await progressAPI.resetDemo();
+      await fetchDashboardData();
+    } catch (err) {
+      console.error('Reset demo progress failed:', err);
+    } finally {
+      setResettingDemo(false);
+    }
+  };
 
   // Fetch user's courses and progress analytics
   const fetchDashboardData = useCallback(async () => {
@@ -216,6 +230,19 @@ export default function DashboardPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          {user?.email === 'demo@gmail.com' && (
+            <Button
+              variant="outline"
+              size="sm"
+              icon={RotateCcw}
+              loading={resettingDemo}
+              onClick={handleResetDemo}
+              className="text-amber-400 border-amber-500/40 hover:bg-amber-500/10"
+              title="Reset all demo progress to 0% clean slate"
+            >
+              Reset Demo Progress
+            </Button>
+          )}
           <Link to="/progress">
             <Button variant="secondary" size="sm" icon={BarChart3}>
               Analytics Hub

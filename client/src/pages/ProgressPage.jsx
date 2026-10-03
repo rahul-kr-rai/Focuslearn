@@ -14,6 +14,7 @@ import {
   ArrowUpRight,
   RotateCcw,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { progressAPI, quizAPI } from '../services/api';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -43,12 +44,14 @@ function formatSeconds(sec = 0) {
 }
 
 export default function ProgressPage() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
   const [quizOverview, setQuizOverview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filterTab, setFilterTab] = useState('all'); // 'all' | 'in_progress' | 'completed'
+  const [resettingDemo, setResettingDemo] = useState(false);
 
   const fetchAnalytics = useCallback(async () => {
     try {
@@ -127,6 +130,18 @@ export default function ProgressPage() {
     return true;
   });
 
+  const handleResetDemo = async () => {
+    try {
+      setResettingDemo(true);
+      await progressAPI.resetDemo();
+      await fetchAnalytics();
+    } catch (err) {
+      console.error('Reset demo progress failed:', err);
+    } finally {
+      setResettingDemo(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in space-y-10">
       {/* Header */}
@@ -140,11 +155,26 @@ export default function ProgressPage() {
           </p>
         </div>
 
-        <Link to="/dashboard">
-          <Button variant="secondary" size="sm" icon={BookOpen}>
-            Go to Courses
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          {user?.email === 'demo@gmail.com' && (
+            <Button
+              variant="outline"
+              size="sm"
+              icon={RotateCcw}
+              loading={resettingDemo}
+              onClick={handleResetDemo}
+              className="text-amber-400 border-amber-500/40 hover:bg-amber-500/10"
+              title="Reset all demo progress to 0% clean slate"
+            >
+              Reset Demo Progress
+            </Button>
+          )}
+          <Link to="/dashboard">
+            <Button variant="secondary" size="sm" icon={BookOpen}>
+              Go to Courses
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* ── Top Summary Metric Cards ── */}

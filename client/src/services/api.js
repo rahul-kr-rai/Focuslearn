@@ -89,6 +89,7 @@ export const progressAPI = {
   getByCourse: (courseId) => api.get(`/progress/${courseId}`),
   update: (courseId, data) => api.put(`/progress/${courseId}`, data),
   getDashboard: () => api.get('/progress/dashboard'),
+  resetDemo: () => api.post('/progress/reset-demo'),
 };
 
 export const takedownAPI = {

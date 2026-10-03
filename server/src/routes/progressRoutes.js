@@ -3,6 +3,7 @@ import {
   getCourseProgress,
   updateCourseProgress,
   getProgressDashboard,
+  resetDemoProgressHandler,
 } from '../controllers/progressController.js';
 import authenticate from '../middleware/auth.js';
 
@@ -13,6 +14,9 @@ router.use(authenticate);
 
 // Aggregated analytics dashboard
 router.get('/dashboard', getProgressDashboard);
+
+// On-demand reset of demo user progress
+router.post('/reset-demo', resetDemoProgressHandler);
 
 // Course-specific progress
 router.get('/:courseId', getCourseProgress);

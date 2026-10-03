@@ -74,6 +74,20 @@ export default function LoginPage() {
               Try demo details to explore this project
             </span>
           </div>
+          <div className="flex items-center justify-between pt-1 pb-1 border-b border-amber-500/20 mb-1.5">
+            <span className="text-[11px] text-text-tertiary">Fresh test session</span>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail(DEMO_CREDENTIALS.email);
+                setPassword(DEMO_CREDENTIALS.password);
+                setFieldErrors({});
+              }}
+              className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer"
+            >
+              Auto-fill into form
+            </button>
+          </div>
           <div className="flex items-center justify-between py-0.5">
             <span className="text-text-secondary">
               Demo user: <span className="font-mono text-text-primary font-medium">{DEMO_CREDENTIALS.email}</span>
