@@ -10,6 +10,9 @@ import {
   Sparkles,
   BookOpen,
   Zap,
+  Link2,
+  TrendingUp,
+  ChevronRight,
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import LegalDisclaimer from '../components/layout/LegalDisclaimer';
@@ -143,29 +146,129 @@ export default function HomePage() {
 
       {/* How it works */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center max-w-xl mx-auto mb-14">
+        <div className="text-center max-w-xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-accent-primary/10 border border-accent-primary/20 mb-4">
+            <Zap className="w-3.5 h-3.5 text-accent-primary" />
+            <span className="text-xs font-semibold tracking-wider uppercase text-accent-primary">How It Works</span>
+          </div>
           <h2 className="text-center text-3xl sm:text-4xl font-bold text-text-primary mb-4">
-            How it works
+            From playlist to mastery in <span className="gradient-text">three steps</span>
           </h2>
-          <p className="text-center text-text-secondary max-w-md mx-auto">
-            Convert any YouTube playlist into an interactive study course in three simple steps.
+          <p className="text-center text-text-secondary max-w-md mx-auto text-base">
+            Convert any YouTube playlist into an interactive, distraction-free study course in minutes.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { step: '01', title: 'Paste a Playlist URL', desc: 'Drop any YouTube playlist link and we\'ll parse it into a structured course.' },
-            { step: '02', title: 'Study Distraction-Free', desc: 'Watch videos in a clean player with notes, quizzes, and no distractions.' },
-            { step: '03', title: 'Track Your Progress', desc: 'Set goals, maintain streaks, and see your completion grow over time.' },
-          ].map((item) => (
-            <div key={item.step} className="text-center">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent-primary/10 mb-4">
-                <span className="text-xl font-bold gradient-text">{item.step}</span>
-              </div>
-              <h3 className="text-lg font-semibold text-text-primary mb-2">{item.title}</h3>
-              <p className="text-sm text-text-secondary">{item.desc}</p>
+        <div className="relative max-w-5xl mx-auto">
+          {/* Desktop Milestone Connecting Line */}
+          <div
+            className="hidden md:block absolute top-7 left-[16.67%] right-[16.67%] -translate-y-1/2 pointer-events-none z-0"
+            aria-hidden="true"
+          >
+            {/* Background track line */}
+            <div className="w-full h-0.5 bg-border-default/60" />
+
+            {/* Glowing gradient connection line */}
+            <div className="absolute inset-0 h-0.5 bg-gradient-to-r from-accent-primary via-accent-secondary to-accent-purple" />
+
+            {/* Ambient blur glow */}
+            <div className="absolute inset-0 h-0.5 bg-gradient-to-r from-accent-primary via-accent-secondary to-accent-purple blur-[3px] opacity-75" />
+
+            {/* Directional Progress Nodes between milestones */}
+            <div className="absolute top-1/2 left-[25%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-6 h-6 rounded-full bg-bg-primary border border-accent-primary/40 shadow-sm text-accent-primary">
+              <ChevronRight className="w-3.5 h-3.5" />
             </div>
-          ))}
+            <div className="absolute top-1/2 left-[75%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-6 h-6 rounded-full bg-bg-primary border border-accent-secondary/40 shadow-sm text-accent-secondary">
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
+          </div>
+
+          {/* Steps Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative z-10">
+            {[
+              {
+                step: '01',
+                title: 'Paste a Playlist URL',
+                desc: "Drop any YouTube playlist link and we'll instantly parse, clean, and organize all lessons into a structured course syllabus.",
+                icon: Link2,
+                tag: 'Step 1: Import',
+                gradient: 'from-accent-primary to-accent-secondary',
+                badgeColor: 'bg-accent-primary/10 text-accent-primary border-accent-primary/30',
+                nodeBorder: 'group-hover:border-accent-primary group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]',
+                iconColor: 'text-accent-primary',
+              },
+              {
+                step: '02',
+                title: 'Study Distraction-Free',
+                desc: 'Watch inside a clean, ad-free player. Capture timestamped notes, review summaries, and test recall with AI quizzes.',
+                icon: BookOpen,
+                tag: 'Step 2: Focus',
+                gradient: 'from-accent-secondary to-accent-purple',
+                badgeColor: 'bg-accent-secondary/10 text-accent-secondary border-accent-secondary/30',
+                nodeBorder: 'group-hover:border-accent-secondary group-hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]',
+                iconColor: 'text-accent-secondary',
+              },
+              {
+                step: '03',
+                title: 'Track Your Progress',
+                desc: 'Keep your momentum with daily study streaks, time tracking, and visual completion milestones as you master topics.',
+                icon: TrendingUp,
+                tag: 'Step 3: Master',
+                gradient: 'from-accent-purple to-accent-primary',
+                badgeColor: 'bg-accent-purple/10 text-accent-purple border-accent-purple/30',
+                nodeBorder: 'group-hover:border-accent-purple group-hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]',
+                iconColor: 'text-accent-purple',
+              },
+            ].map((item, index, arr) => (
+              <div key={item.step} className="flex flex-col items-center">
+                <div className="group w-full flex flex-col items-center text-center">
+                  {/* Milestone Node */}
+                  <div className="relative">
+                    <div
+                      className={`relative z-10 w-14 h-14 rounded-2xl bg-bg-primary border-2 border-border-default ${item.nodeBorder} flex items-center justify-center shadow-md transition-all duration-300 group-hover:scale-110`}
+                    >
+                      <item.icon className={`w-6 h-6 ${item.iconColor} transition-transform duration-300 group-hover:scale-110`} />
+                    </div>
+
+                    {/* Step Number Badge */}
+                    <span className="absolute -top-2.5 -right-2 z-20 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-bg-elevated border border-border-default text-text-primary shadow-sm">
+                      {item.step}
+                    </span>
+                  </div>
+
+                  {/* Milestone Card */}
+                  <div className="w-full mt-6 p-6 rounded-2xl bg-bg-secondary/60 backdrop-blur-md border border-border-default hover:border-border-accent transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl relative overflow-hidden flex flex-col items-center text-center">
+                    {/* Top gradient highlight strip */}
+                    <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${item.gradient} opacity-40 group-hover:opacity-100 transition-opacity duration-300`} />
+
+                    {/* Milestone Tag */}
+                    <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full border mb-3 ${item.badgeColor}`}>
+                      {item.tag}
+                    </span>
+
+                    <h3 className="text-lg font-bold text-text-primary mb-2 group-hover:text-accent-primary transition-colors">
+                      {item.title}
+                    </h3>
+
+                    <p className="text-sm text-text-secondary leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Mobile Connecting Line to next milestone */}
+                {index < arr.length - 1 && (
+                  <div className="md:hidden flex flex-col items-center my-4" aria-hidden="true">
+                    <div className="w-0.5 h-8 bg-gradient-to-b from-accent-primary to-accent-secondary rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                    <div className="w-6 h-6 rounded-full bg-bg-primary border border-border-default flex items-center justify-center -mt-2 shadow-sm text-accent-secondary">
+                      <ChevronRight className="w-3.5 h-3.5 rotate-90" />
+                    </div>
+                    <div className="w-0.5 h-4 bg-gradient-to-b from-accent-secondary to-accent-purple rounded-full opacity-60" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
