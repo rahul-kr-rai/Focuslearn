@@ -1,8 +1,11 @@
 import { useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 /**
  * Modal overlay component with backdrop blur and close on Escape.
+ * Portaled to document.body so that parent container transforms/animations
+ * do not alter fixed viewport positioning.
  */
 export default function Modal({
   isOpen,
@@ -39,30 +42,34 @@ export default function Modal({
     xl: 'max-w-4xl',
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  const modalNode = (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Modal Content */}
       <div
+        role="dialog"
+        aria-modal="true"
         className={`
-          relative w-full ${sizeClasses[size]}
+          relative w-full ${sizeClasses[size]} max-h-[calc(100vh-2rem)] flex flex-col
           bg-bg-secondary border border-border-default rounded-xl
           shadow-xl animate-fade-in
         `}
       >
         {/* Header */}
         {(title || showClose) && (
-          <div className="flex items-center justify-between p-6 border-b border-border-default">
+          <div className="flex items-center justify-between p-6 border-b border-border-default shrink-0">
             {title && (
               <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
             )}
             {showClose && (
               <button
+                type="button"
                 onClick={onClose}
                 className="p-1.5 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-bg-tertiary transition-colors duration-200"
               >
@@ -73,8 +80,11 @@ export default function Modal({
         )}
 
         {/* Body */}
-        <div className="p-6">{children}</div>
+        <div className="p-6 overflow-y-auto">{children}</div>
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalNode, document.body) : modalNode;
 }
+

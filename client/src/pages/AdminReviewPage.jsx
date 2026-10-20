@@ -23,6 +23,7 @@ import {
 import { takedownAPI } from '../services/api';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import Modal from '../components/ui/Modal';
 
 export default function AdminReviewPage() {
   const [requests, setRequests] = useState([]);
@@ -469,110 +470,105 @@ export default function AdminReviewPage() {
       )}
 
       {/* Confirmation Modal */}
-      {confirmDialog.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <Card padding="lg" className="w-full max-w-lg space-y-4 border-border-default shadow-xl">
-            <div className="flex items-center justify-between border-b border-border-default pb-3">
-              <h3 className="text-base font-bold text-text-primary flex items-center gap-2">
-                {confirmDialog.targetStatus === 'approved' ? (
-                  <>
-                    <ShieldCheck className="w-5 h-5 text-accent-success" />
-                    Confirm Approval & Content Deactivation
-                  </>
-                ) : (
-                  <>
-                    <AlertTriangle className="w-5 h-5 text-accent-danger" />
-                    Confirm Claim Rejection
-                  </>
-                )}
-              </h3>
-              <button
-                onClick={() =>
-                  setConfirmDialog({
-                    isOpen: false,
-                    request: null,
-                    targetStatus: null,
-                    adminNotes: '',
-                  })
-                }
-                className="text-text-tertiary hover:text-text-primary p-1 rounded-lg"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+      <Modal
+        isOpen={confirmDialog.isOpen}
+        onClose={() =>
+          setConfirmDialog({
+            isOpen: false,
+            request: null,
+            targetStatus: null,
+            adminNotes: '',
+          })
+        }
+        title={
+          <span className="flex items-center gap-2">
+            {confirmDialog.targetStatus === 'approved' ? (
+              <>
+                <ShieldCheck className="w-5 h-5 text-accent-success" />
+                Confirm Approval &amp; Content Deactivation
+              </>
+            ) : (
+              <>
+                <AlertTriangle className="w-5 h-5 text-accent-danger" />
+                Confirm Claim Rejection
+              </>
+            )}
+          </span>
+        }
+        size="md"
+      >
+        <div className="space-y-4">
+          <p className="text-xs text-text-secondary leading-relaxed">
+            {confirmDialog.targetStatus === 'approved' ? (
+              <>
+                Approving this takedown request will mark the submission as{' '}
+                <strong className="text-accent-success font-semibold">Approved</strong> and
+                automatically deactivate any active FocusLearn courses linked to this playlist or
+                channel.
+              </>
+            ) : (
+              <>
+                Rejecting this claim will mark the submission as{' '}
+                <strong className="text-accent-danger font-semibold">Rejected</strong>. No
+                courses will be altered.
+              </>
+            )}
+          </p>
 
-            <p className="text-xs text-text-secondary leading-relaxed">
-              {confirmDialog.targetStatus === 'approved' ? (
-                <>
-                  Approving this takedown request will mark the submission as{' '}
-                  <strong className="text-accent-success font-semibold">Approved</strong> and
-                  automatically deactivate any active FocusLearn courses linked to this playlist or
-                  channel.
-                </>
-              ) : (
-                <>
-                  Rejecting this claim will mark the submission as{' '}
-                  <strong className="text-accent-danger font-semibold">Rejected</strong>. No
-                  courses will be altered.
-                </>
-              )}
-            </p>
-
-            <div className="p-3 rounded-lg bg-bg-primary/60 border border-border-subtle text-xs space-y-1">
-              <div>
-                <span className="text-text-tertiary">Requester: </span>
-                <strong className="text-text-primary">{confirmDialog.request?.requesterName}</strong>{' '}
-                ({confirmDialog.request?.requesterEmail})
-              </div>
-              <div className="truncate">
-                <span className="text-text-tertiary">Channel: </span>
-                <span className="text-accent-primary">{confirmDialog.request?.channelUrl}</span>
-              </div>
-            </div>
-
+          <div className="p-3 rounded-lg bg-bg-primary/60 border border-border-subtle text-xs space-y-1">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-                Admin Adjudication Note
-              </label>
-              <textarea
-                rows={3}
-                value={confirmDialog.adminNotes}
-                onChange={(e) =>
-                  setConfirmDialog({ ...confirmDialog, adminNotes: e.target.value })
-                }
-                placeholder="Add explanatory notes for compliance audit logs..."
-                className="w-full bg-bg-primary border border-border-default rounded-xl p-2.5 text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
-              />
+              <span className="text-text-tertiary">Requester: </span>
+              <strong className="text-text-primary">{confirmDialog.request?.requesterName}</strong>{' '}
+              ({confirmDialog.request?.requesterEmail})
             </div>
+            <div className="truncate">
+              <span className="text-text-tertiary">Channel: </span>
+              <span className="text-accent-primary">{confirmDialog.request?.channelUrl}</span>
+            </div>
+          </div>
 
-            <div className="flex items-center justify-end gap-3 pt-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() =>
-                  setConfirmDialog({
-                    isOpen: false,
-                    request: null,
-                    targetStatus: null,
-                    adminNotes: '',
-                  })
-                }
-              >
-                Cancel
-              </Button>
-              <Button
-                variant={confirmDialog.targetStatus === 'approved' ? 'primary' : 'danger'}
-                size="sm"
-                onClick={handleConfirmAction}
-              >
-                {confirmDialog.targetStatus === 'approved'
-                  ? 'Confirm Approval'
-                  : 'Confirm Rejection'}
-              </Button>
-            </div>
-          </Card>
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
+              Admin Adjudication Note
+            </label>
+            <textarea
+              rows={3}
+              value={confirmDialog.adminNotes}
+              onChange={(e) =>
+                setConfirmDialog({ ...confirmDialog, adminNotes: e.target.value })
+              }
+              placeholder="Add explanatory notes for compliance audit logs..."
+              className="w-full bg-bg-primary border border-border-default rounded-xl p-2.5 text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                setConfirmDialog({
+                  isOpen: false,
+                  request: null,
+                  targetStatus: null,
+                  adminNotes: '',
+                })
+              }
+            >
+              Cancel
+            </Button>
+            <Button
+              variant={confirmDialog.targetStatus === 'approved' ? 'primary' : 'danger'}
+              size="sm"
+              onClick={handleConfirmAction}
+            >
+              {confirmDialog.targetStatus === 'approved'
+                ? 'Confirm Approval'
+                : 'Confirm Rejection'}
+            </Button>
+          </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 }
